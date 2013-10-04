@@ -10,15 +10,12 @@ class EntityManager():
 
     def __generateEntities__(self):
         ball1 = Ball(50, 50)
-        ball1.accX = 7
         ball2 = Ball(400, 50)
-        ball2.accX = -7
-        ball2.accY = 7
         return [ball1, ball2]
 
-    def updateEntities(self, dt):
+    def updateEntities(self, dt, keys):
         for entity in self.entities:
-            entity.update(dt)
+            entity.update(dt, keys)
 
     def drawEntities(self):
         for entity in self.entities:
@@ -43,7 +40,7 @@ class Entity(cocos.sprite.Sprite):
     # !! We do NOT update the position based on velocity here !! #
     # !! Positions are updated by the physics module update   !! #
     # !! method that is called from the game layer            !! #
-    def update(self, dt):
+    def update(self, dt, keys):
         #Update velocity
         #TODO Refactor the two blocks below(duplication for x and y axis)
         #Calculate what the velocity would be ignoring maximum velocity
@@ -78,14 +75,17 @@ class Ball(Entity):
     def __init__(self, x=0, y=0):
         super(Ball, self).__init__('ball.png')
         self.position = x, y
+
+    def update(self, dt, keys):
+        #Call parent update method
+        Entity.update(self, dt, keys)
+
+
+class PlayerControlledBall(Ball):
+
+    #Constructor for player controlled ball.
+    #Parameter "number" is 1 for left and 2 for right(used to assign controls)
+    def __init__(self, number):
+        super(PlayerControlledBall, self).__init__()
         self.maxVelX = 150
         self.maxVelY = 100
-
-
-    def update(self, dt):
-        #Call parent update method
-        Entity.update(self, dt)
-
-        #TODO Remove debug code
-        #Print ball velocity for debugging
-        print "Ball update method called. vx=" + str(self.vx) + ", vy=" + str(self.vy)
