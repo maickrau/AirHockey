@@ -21,10 +21,12 @@ class GameLayer(cocos.layer.Layer):
         self.schedule(self.update)
         self.physics_manager = physics.PhysicsManager()
 
+    #MAIN GAME LOOP
+    #Called every frame
     def update(self, dt):
         #Update entities (velocity is updated but NOT position)
         self.entity_manager.updateEntities(dt, self.keys_pressed)
-        #Give the physics manager the entities and let it update positions
+        #Give the physics manager the entities to update positions
         self.physics_manager.update(dt, self.entity_manager.entities)
         #Draw entities
         self.entity_manager.drawEntities()

@@ -5,7 +5,6 @@ import math
 class EntityManager():
 
     def __init__(self):
-        #super(EntityManager, self).__init__()
         self.entities = self.__generateEntities__()
 
     def __generateEntities__(self):
