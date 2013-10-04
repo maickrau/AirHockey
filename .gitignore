@@ -1,4 +1,8 @@
 *.py[cod]
+*.pyc
+
+#Ninja project file
+*.nja
 
 # C extensions
 *.so
