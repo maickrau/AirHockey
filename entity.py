@@ -8,8 +8,9 @@ class EntityManager():
         self.entities = self.__generateEntities__()
 
     def __generateEntities__(self):
+        #TODO Remove placeholder code
         ball1 = Ball(50, 50)
-        ball2 = Ball(400, 50)
+        ball2 = Ball(50, 100)
         return [ball1, ball2]
 
     def updateEntities(self, dt, keys):
@@ -72,8 +73,11 @@ class Ball(Entity):
 
     #Constructor for Ball instance, defaults pos x and y to 0, 0 if not given
     def __init__(self, x=0, y=0):
-        super(Ball, self).__init__('ball.png')
+        super(Ball, self).__init__('res/ball.png')
         self.position = x, y
+        self.maxVelX = 150
+        self.maxVelY = 100
+        self.accX = 6
 
     def update(self, dt, keys):
         #Call parent update method
@@ -86,5 +90,3 @@ class PlayerControlledBall(Ball):
     #Parameter "number" is 1 for left and 2 for right(used to assign controls)
     def __init__(self, number):
         super(PlayerControlledBall, self).__init__()
-        self.maxVelX = 150
-        self.maxVelY = 100
