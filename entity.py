@@ -40,7 +40,7 @@ class Entity(cocos.sprite.Sprite):
     # !! We do NOT update the position based on velocity here !! #
     # !! Positions are updated by the physics module update   !! #
     # !! method that is called from the game layer            !! #
-    def update(self, dt, keys):
+    def update(self, dt, input_model):
         #Update velocity
         #TODO Refactor the two blocks below(duplication for x and y axis)
         #Calculate what the velocity would be ignoring maximum velocity
@@ -79,9 +79,9 @@ class Ball(Entity):
         self.maxVelY = 100
         self.accX = 6
 
-    def update(self, dt, keys):
+    def update(self, dt, input_model):
         #Call parent update method
-        Entity.update(self, dt, keys)
+        Entity.update(self, dt, input_model)
 
 
 class PlayerControlledBall(Ball):
