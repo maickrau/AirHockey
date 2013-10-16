@@ -32,8 +32,6 @@ class GameLayer(cocos.layer.Layer):
         self.entity_manager.updateEntities(dt, input_model)
         #Give the physics manager the entities to update positions
         self.physics_manager.update(dt, self.entity_manager.entities)
-        #Draw entities
-        self.entity_manager.drawEntities()
 
     def on_key_press(self, key, modifiers):
         self.keys_pressed.add(key)

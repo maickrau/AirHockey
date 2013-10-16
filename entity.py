@@ -17,10 +17,6 @@ class EntityManager():
         for entity in self.entities:
             entity.update(dt, keys)
 
-    def drawEntities(self):
-        for entity in self.entities:
-            entity.draw()
-
 
 class Entity(cocos.sprite.Sprite):
 
