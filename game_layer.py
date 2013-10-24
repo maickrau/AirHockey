@@ -3,7 +3,6 @@ import entity
 import physics
 import input
 
-
 class GameLayer(cocos.layer.Layer):
 
     #Lets the layer receive events from director.window
@@ -13,28 +12,20 @@ class GameLayer(cocos.layer.Layer):
         super(GameLayer, self).__init__()
         self.keys_pressed = set()
         self.entity_manager = entity.EntityManager()
-        self.physics_manager = physics.PhysicsManager()
         self.input_manager = input.InputManager()
+        self.physics_manager = physics.PhysicsManager(self.entity_manager.entities, self.input_manager)
 
         #Add entities to layer
         for e in self.entity_manager.entities:
             self.add(e)
 
-        #Schedule the update method
-        self.schedule(self.update)
-
-    #MAIN GAME LOOP
-    #Called every frame
-    def update(self, dt):
-        #Get input model from input manager
-        input_model = self.input_manager.getInputModel(self.keys_pressed)
-        #Update entities (velocity is updated but NOT position)
-        self.entity_manager.updateEntities(dt, input_model)
-        #Give the physics manager the entities to update positions
-        self.physics_manager.update(dt, self.entity_manager.entities)
+        #Schedule the render method
+        self.schedule(self.entity_manager.render)
+        # Set a timer-based updater for physics
+        self.entity_manager.updater(self.physics_manager, self.physics_manager.update, 0.01)
 
     def on_key_press(self, key, modifiers):
-        self.keys_pressed.add(key)
+        self.input_manager.update_key(key, 1)
 
     def on_key_release(self, key, modifiers):
-        self.keys_pressed.remove(key)
+        self.input_manager.update_key(key, 0)

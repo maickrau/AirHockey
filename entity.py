@@ -1,6 +1,8 @@
 import cocos
 import math
-
+from threading import Timer
+from util import *
+import config
 
 class EntityManager():
 
@@ -9,75 +11,59 @@ class EntityManager():
 
     def __generateEntities__(self):
         #TODO Remove placeholder code
-        ball1 = Ball(50, 50)
-        ball2 = Ball(50, 100)
-        return [ball1, ball2]
+        ball1 = Ball(eu.Point2(100, 100), 'letters')
+        ball2 = Ball(eu.Point2(300, 100), 'arrows')
+        puck = Ball(eu.Point2(200, 200), 'puck')
+        return [ball1, ball2, puck]
 
-    def updateEntities(self, dt, keys):
-        for entity in self.entities:
-            entity.update(dt, keys)
+    def updater(self, obj, func, interval):
+        """Thread-based timer 
+        """
+        def iteration(noexit=0):
+            #if not noexit and not obj.closing:
+            # if not noexit:
+            #     print 'exiting'
+            #     return
+            obj._timer = Timer(interval, iteration).start()
+            func(interval)
+
+        # obj._timer = Timer(interval, iteration).start()
+        iteration(1)
+
+    def should_render(self, old, new):
+        new = map(round, world_to_view(new))
+        return old[0] != new[0] or old[1] != new[1]
+
+    def render(self, dt):
+        for ball in self.entities:
+            if self.should_render(ball.old_int_pos, ball.pos):
+                ball.position = world_to_view(ball.pos)
+                ball.old_int_pos = to_int_pos(ball.pos)
 
 
 class Entity(cocos.sprite.Sprite):
 
     def __init__(self, sprite_sheet):
         super(Entity, self).__init__(sprite_sheet)
-        #Initialize velocity x and y to 0, 0
-        self.vx = 0
-        self.vy = 0
-        #Initialize maximum ABSOLUTE velocity to 0, 0 (0=no maximum velocity)
-        self.maxVelX = 0
-        self.maxVelY = 0
-        #Initialize acceleration to 0,0
-        self.accX = 0
-        self.accY = 0
-
-    #General update method for an Entity.
-    # !! We do NOT update the position based on velocity here !! #
-    # !! Positions are updated by the physics module update   !! #
-    # !! method that is called from the game layer            !! #
-    def update(self, dt, input_model):
-        #Update velocity
-        #TODO Refactor the two blocks below(duplication for x and y axis)
-        #Calculate what the velocity would be ignoring maximum velocity
-        potentialVx = self.vx + (self.accX * dt)
-        #If absolute potential current velocity is greater that max vel
-        #and maxvelx is not set to unlimited(0)
-        if math.fabs(potentialVx) > self.maxVelX and not self.maxVelX == 0:
-            #If current potential velocity was negative assign negative max vel
-            if (self.accX < 0):
-                self.vx = -self.maxVelX
-            #Else assign the max vel
-            else:
-                self.vx = self.maxVelX
-        #Else if potential velocity wasn't more than max vel assign it to vel
-        else:
-            self.vx = potentialVx
-
-        #Same as above for y axis
-        potentialVy = self.vy + (self.accY * dt)
-        if math.fabs(potentialVy) > self.maxVelY and not self.maxVelY == 0:
-            if (self.accY < 0):
-                self.vy = -self.maxVelY
-            else:
-                self.vy = self.maxVelY
-        else:
-            self.vy = potentialVy
 
 
 class Ball(Entity):
 
     #Constructor for Ball instance, defaults pos x and y to 0, 0 if not given
-    def __init__(self, x=0, y=0):
-        super(Ball, self).__init__('res/ball.png')
-        self.position = x, y
-        self.maxVelX = 150
-        self.maxVelY = 100
-        self.accX = 6
 
-    def update(self, dt, input_model):
-        #Call parent update method
-        Entity.update(self, dt, input_model)
+    def __init__(self, init_pos, ident):
+        super(Ball, self).__init__(ident == 'puck' and 'res/puck.png' or 'res/ball.png')
+        # init_pos as eu.Point2
+        self.pos = init_pos
+        self.old_int_pos = to_int_pos(init_pos)
+        self.vel = eu.Vector2(0, 0)
+        self.acc = eu.Vector2(0, 0)
+        # identifier of the ball, used to associate it with input
+        self.ident = ident
+
+        self.position = world_to_view(init_pos)
+        self.radius = config.radius
+
 
 
 class PlayerControlledBall(Ball):
