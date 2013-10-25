@@ -43,16 +43,8 @@ class EntityManager():
 
 class Entity(cocos.sprite.Sprite):
 
-    def __init__(self, sprite_sheet):
+    def __init__(self, init_pos, ident, sprite_sheet):
         super(Entity, self).__init__(sprite_sheet)
-
-
-class Ball(Entity):
-
-    #Constructor for Ball instance, defaults pos x and y to 0, 0 if not given
-
-    def __init__(self, init_pos, ident):
-        super(Ball, self).__init__(ident == 'puck' and 'res/puck.png' or 'res/ball.png')
         # init_pos as eu.Point2
         self.pos = init_pos
         self.old_int_pos = to_int_pos(init_pos)
@@ -60,8 +52,16 @@ class Ball(Entity):
         self.acc = eu.Vector2(0, 0)
         # identifier of the ball, used to associate it with input
         self.ident = ident
-
         self.position = world_to_view(init_pos)
+
+
+class Ball(Entity):
+
+    #Constructor for Ball instance, defaults pos x and y to 0, 0 if not given
+
+    def __init__(self, init_pos, ident):
+        super(Ball, self).__init__(init_pos, ident, ident == 'puck' and 'res/puck.png' or 'res/ball.png')
+
         self.radius = config.radius
 
 

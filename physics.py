@@ -21,8 +21,8 @@ class PhysicsManager():
         for ball in self.balls:
             mx = self.input_state.get(ball.ident, 'x')
             my = self.input_state.get(ball.ident, 'y')
-            self.update_acc(ball, mx, my)
-            self.update_vel(ball, mx, my, dt)
+            self._update_acc(ball, mx, my)
+            self._update_vel(ball, mx, my, dt)
         self.collide()
         self.collide_walls()
         for ball in self.balls:
@@ -30,7 +30,7 @@ class PhysicsManager():
             # print ball.pos, dt, self.seq
         self.prev_time = time.time()
 
-    def update_acc(self, ball, mx, my):
+    def _update_acc(self, ball, mx, my):
         """Update acceleration"""
         if mx:
             if abs(ball.vel.x) < config.max_vel or copysign(1, ball.vel.x) != mx:
@@ -50,7 +50,7 @@ class PhysicsManager():
         elif ball.vel.y:
             ball.acc.y = -copysign(config.decel, ball.vel.y)
 
-    def update_vel(self, ball, mx, my, dt):
+    def _update_vel(self, ball, mx, my, dt):
         """Update velocity"""
         if ball.acc.x:
             dv = ball.acc.x * dt
