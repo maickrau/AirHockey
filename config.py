@@ -12,6 +12,8 @@ bindings = {
     key.S: 'down2',
 }
 
+tick = 0.01
+
 max_vel = 100.0
 acc = 100.0
 decel = 10.0

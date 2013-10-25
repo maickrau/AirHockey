@@ -7,9 +7,9 @@ import config
 class EntityManager():
 
     def __init__(self):
-        self.entities = self.__generateEntities__()
+        self.entities = self._generate_entities()
 
-    def __generateEntities__(self):
+    def _generate_entities(self):
         #TODO Remove placeholder code
         ball1 = Ball(eu.Point2(100, 100), 'letters')
         ball2 = Ball(eu.Point2(300, 100), 'arrows')
@@ -30,13 +30,13 @@ class EntityManager():
         # obj._timer = Timer(interval, iteration).start()
         iteration(1)
 
-    def should_render(self, old, new):
+    def _should_render(self, old, new):
         new = map(round, world_to_view(new))
         return old[0] != new[0] or old[1] != new[1]
 
     def render(self, dt):
         for ball in self.entities:
-            if self.should_render(ball.old_int_pos, ball.pos):
+            if self._should_render(ball.old_int_pos, ball.pos):
                 ball.position = world_to_view(ball.pos)
                 ball.old_int_pos = to_int_pos(ball.pos)
 
@@ -53,6 +53,7 @@ class Entity(cocos.sprite.Sprite):
         # identifier of the ball, used to associate it with input
         self.ident = ident
         self.position = world_to_view(init_pos)
+        self.max_vel = config.max_vel
 
 
 class Ball(Entity):

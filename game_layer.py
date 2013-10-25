@@ -22,7 +22,7 @@ class GameLayer(cocos.layer.Layer):
         #Schedule the render method
         self.schedule(self.entity_manager.render)
         # Set a timer-based updater for physics
-        self.entity_manager.updater(self.physics_manager, self.physics_manager.update, 0.01)
+        self.entity_manager.updater(self.physics_manager, self.physics_manager.update, config.tick)
 
     def on_key_press(self, key, modifiers):
         self.input_manager.update_key(key, 1)
