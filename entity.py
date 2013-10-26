@@ -57,6 +57,8 @@ class Entity(cocos.sprite.Sprite):
         self.max_vel = config.max_vel
         self.accValue = config.acc  #maximum acceleration from player control, different from current acceleration
         self.decel = config.decel
+        self.elasticity = config.elasticity
+        self.mass = config.mass
 
 
 class Ball(Entity):

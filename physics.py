@@ -16,9 +16,10 @@ class PhysicsManager():
         self.walls = {}
 
     def update(self, dt):
-        # print time.time() - self.prev_time
         self.seq += 1
-        print self.balls[0].vel
+#        self._debug_print_total_momentum()
+#        self._debug_print_center_of_mass()
+#        self._debug_print_center_of_momentum_frame()
         for ball in self.balls:
             movement = eu.Vector2(self.input_state.get(ball.ident, 'x'), self.input_state.get(ball.ident, 'y'))
             movement.normalize()
@@ -28,8 +29,31 @@ class PhysicsManager():
         self.collide_walls()
         for ball in self.balls:
             self.update_pos(ball, dt)
-            # print ball.pos, dt, self.seq
         self.prev_time = time.time()
+
+    def _debug_print_total_momentum(self):
+        momentum = 0
+        for ball in self.balls:
+            momentum += ball.vel.magnitude()*ball.mass
+        print momentum
+
+    def _debug_print_center_of_momentum_frame(self):
+        momentum = eu.Vector2(0, 0)
+        mass = 0
+        for ball in self.balls:
+            momentum += ball.vel*ball.mass
+            mass += ball.mass
+        momentum /= mass
+        print momentum
+
+    def _debug_print_center_of_mass(self):
+        center = eu.Vector2(0, 0)
+        mass = 0
+        for ball in self.balls:
+            center += ball.pos*ball.mass
+            mass += ball.mass
+        center /= mass
+        print center
 
     def _update_acc(self, ball, movement):
         """Update acceleration"""
@@ -57,24 +81,38 @@ class PhysicsManager():
             for j in range(i):
                 b1 = self.balls[i]
                 b2 = self.balls[j]
-                if b1.pos.distance(b2.pos) >= b1.radius + b2.radius:
-                    continue
-                print 'collision of', i, b1.ident, 'and', j, b2.ident
-                print 'positions: %d: x: %f y: %f ; %d: x: %f y: %f' % (
-                    i, b1.pos.x, b1.pos.y, j, b2.pos.x, b2.pos.y
-                )
-                print 'Distance: %f' % b1.pos.distance(b2.pos)
-                # elastic collision, equal mass, details http://www.vobarian.com/collisions/2dcollisions2.pdf
-                normal = eu.Vector2(b2.pos.x - b1.pos.x, b2.pos.y - b1.pos.y)
-                tang = normal.cross()
-                b1norm = vec_project(b2.vel, normal)
-                b1tang = vec_project(b1.vel, tang)
-                b2norm = vec_project(b1.vel, normal)
-                b2tang = vec_project(b2.vel, tang)
-                b1.vel.x = vec_project(b1norm, unit_vec_x).x + vec_project(b1tang, unit_vec_x).x
-                b1.vel.y = vec_project(b1norm, unit_vec_y).y + vec_project(b1tang, unit_vec_y).y
-                b2.vel.x = vec_project(b2norm, unit_vec_x).x + vec_project(b2tang, unit_vec_x).x
-                b2.vel.y = vec_project(b2norm, unit_vec_y).y + vec_project(b2tang, unit_vec_y).y
+                if b1.pos.distance(b2.pos) < b1.radius + b2.radius:
+                    self._collide_two_balls(b1, b2)
+
+    def _collide_two_balls(self, ball1, ball2):
+        relative_position = ball2.pos-ball1.pos #ball2's position from ball1's frame of reference
+        relative_direction = relative_position.normalized();
+        coefficient_of_restitution = ball1.elasticity*ball2.elasticity
+        #push balls apart so they can't get stuck inside eachothers
+        #lighter ball is pushed more
+        overlap = ((ball1.radius+ball2.radius)-relative_position.magnitude())
+        if (overlap > 0):
+            ball1.pos -= relative_direction * overlap * ball2.mass/(ball1.mass+ball2.mass)
+            ball2.pos += relative_direction * overlap * ball1.mass/(ball1.mass+ball2.mass)
+        #elastic/inelastic collision with varying mass
+        #see: http://en.wikipedia.org/wiki/Inelastic_collision
+        #and http://en.wikipedia.org/wiki/Center_of_momentum_frame
+        momentum_sum = ball1.vel*ball1.mass+ball2.vel*ball2.mass
+        center_of_momentum = momentum_sum/(ball1.mass+ball2.mass)
+        #transform balls to the center of momentum frame
+        ball1.vel -= center_of_momentum
+        ball2.vel -= center_of_momentum
+        #collide
+        velocity_normal1 = vec_project(ball1.vel, relative_direction)
+        velocity_normal2 = vec_project(ball2.vel, relative_direction)
+        ball1.vel -= velocity_normal1*(1.0+coefficient_of_restitution)
+        ball2.vel -= velocity_normal2*(1.0+coefficient_of_restitution)
+        #transform back into world frame
+        ball1.vel += center_of_momentum
+        ball2.vel += center_of_momentum
+        return
+
+
     def collide_walls(self):
         for b in self.balls:
             if b.pos.x < b.radius:

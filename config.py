@@ -14,9 +14,13 @@ bindings = {
 
 tick = 0.01
 
-max_vel = 100.0
-acc = 100.0
+#entities physical properties
+max_vel = 1000.0
+acc = 1000.0
 decel = 10.0
 radius = 16.0
+elasticity = 1.0 #1 is perfectly elastic collisions, 0 is perfectly inelastic
+mass = 1.0
+
 height = 800
 width = 400
