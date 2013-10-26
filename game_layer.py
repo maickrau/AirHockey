@@ -2,6 +2,7 @@ import cocos
 import entity
 import physics
 import input
+import config
 
 class GameLayer(cocos.layer.Layer):
 
