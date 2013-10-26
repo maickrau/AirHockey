@@ -33,22 +33,22 @@ class PhysicsManager():
     def _update_acc(self, ball, mx, my):
         """Update acceleration"""
         if mx:
-            if abs(ball.vel.x) < config.max_vel or copysign(1, ball.vel.x) != mx:
+            if abs(ball.vel.x) < ball.max_vel or copysign(1, ball.vel.x) != mx:
                 # ball is not at max speed or acc has opposite direction
-                ball.acc.x = mx * config.acc
+                ball.acc.x = mx * ball.accValue
             else:
                 ball.acc.x = 0 # max speed achieved, continue with it
         elif ball.vel.x:
             # if key not pressed, decelerate, i.e. accelerate with opposite sign from velocity
-            ball.acc.x = -copysign(config.decel, ball.vel.x)
+            ball.acc.x = -copysign(ball.decel, ball.vel.x)
 
         if my:
-            if abs(ball.vel.y) < config.max_vel or copysign(1, ball.vel.y) != my:
-                ball.acc.y = my * config.acc
+            if abs(ball.vel.y) < ball.max_vel or copysign(1, ball.vel.y) != my:
+                ball.acc.y = my * ball.accValue
             else:
                 ball.acc.y = 0
         elif ball.vel.y:
-            ball.acc.y = -copysign(config.decel, ball.vel.y)
+            ball.acc.y = -copysign(ball.decel, ball.vel.y)
 
     def _update_vel(self, ball, mx, my, dt):
         """Update velocity"""
@@ -57,9 +57,9 @@ class PhysicsManager():
             if copysign(1, ball.acc.x) == copysign(1, ball.vel.x):
                 # increasing velocity
                 ball.vel.x += dv
-                if abs(ball.vel.x) > config.max_vel:
+                if abs(ball.vel.x) > ball.max_vel:
                     # set to max_vel, same direction
-                    ball.vel.x = copysign(config.max_vel, ball.vel.x)
+                    ball.vel.x = copysign(ball.max_vel, ball.vel.x)
             else:
                 # decelerating
                 if abs(ball.vel.x) < abs(dv) and not mx:
@@ -73,9 +73,9 @@ class PhysicsManager():
             if copysign(1, ball.acc.y) == copysign(1, ball.vel.y):
                 # increasing velocity
                 ball.vel.y += ball.acc.y * dt
-                if abs(ball.vel.y) > config.max_vel:
+                if abs(ball.vel.y) > ball.max_vel:
                     # set to max_vel, same direction
-                    ball.vel.y = copysign(config.max_vel, ball.vel.y)
+                    ball.vel.y = copysign(ball.max_vel, ball.vel.y)
             else:
                 # decelerating
                 if abs(ball.vel.y) < abs(dv) and not my:
@@ -94,7 +94,7 @@ class PhysicsManager():
             for j in range(i):
                 b1 = self.balls[i]
                 b2 = self.balls[j]
-                if b1.pos.distance(b2.pos) >= 2 * config.radius:
+                if b1.pos.distance(b2.pos) >= b1.radius + b2.radius:
                     continue
                 print 'collision of', i, b1.ident, 'and', j, b2.ident
                 print 'positions: %d: x: %f y: %f ; %d: x: %f y: %f' % (

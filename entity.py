@@ -53,7 +53,10 @@ class Entity(cocos.sprite.Sprite):
         # identifier of the ball, used to associate it with input
         self.ident = ident
         self.position = world_to_view(init_pos)
+        # default physics attributes
         self.max_vel = config.max_vel
+        self.accValue = config.acc  #maximum acceleration from player control, different from current acceleration
+        self.decel = config.decel
 
 
 class Ball(Entity):
