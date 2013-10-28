@@ -24,3 +24,6 @@ mass = 1.0
 
 height = 800
 width = 400
+
+server_url = "ws://localhost:54321"
+state_history_size = 100

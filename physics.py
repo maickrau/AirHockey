@@ -8,20 +8,23 @@ from util import *
 
 class PhysicsManager():
 
-    def __init__(self, balls, input_state):
+    def __init__(self, balls):
         self.balls = balls
-        self.input_state = input_state
         self.prev_time = time.time()
-        self.seq = 0
         self.walls = {}
 
-    def update(self, dt):
-        self.seq += 1
+    def read_input(self, state, ident):
+        input_data = state.get(ident)
+        if input_data is None:
+            return eu.Vector2(0, 0)
+        return eu.Vector2(input_data['x'], input_data['y'])
+
+    def update(self, dt, input_state):
 #        self._debug_print_total_momentum()
 #        self._debug_print_center_of_mass()
 #        self._debug_print_center_of_momentum_frame()
         for ball in self.balls:
-            movement = eu.Vector2(self.input_state.get(ball.ident, 'x'), self.input_state.get(ball.ident, 'y'))
+            movement = self.read_input(input_state, ball.ident)
             movement.normalize()
             self._update_acc(ball, movement)
             self._update_vel(ball, dt)

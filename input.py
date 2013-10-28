@@ -1,11 +1,10 @@
 import config
 
-
 class InputManager():
 
     def __init__(self):
         # to be used for serialized representation of input state
-        self.serial = {'letters': {'x': 0, 'y': 0}, 'arrows': {'x': 0, 'y': 0}}
+        self.serial = {'letters': {'x': 0, 'y': 0}, 'arrows': {'x': 0, 'y': 0}, 'seq': 0, 'type': 'input'}
         self.buttons = {}
         for v in config.bindings.values():
             self.buttons[v] = 0
