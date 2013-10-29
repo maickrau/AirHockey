@@ -1,9 +1,9 @@
 import cocos
-import entity
 import physics
 import input
 import config
 import client
+from state import EntityManager, StateItem, History
 
 from twisted.internet import reactor
 from threading import Timer, Thread
@@ -20,7 +20,7 @@ class GameLayer(cocos.layer.Layer):
         super(GameLayer, self).__init__()
 
         self.net = client.Client(self)
-        self.entity_manager = entity.EntityManager(0)
+        self.entity_manager = EntityManager(0)
 
         #Schedule the render method
         self.schedule(self.entity_manager.render)
@@ -57,7 +57,7 @@ class GameLayer(cocos.layer.Layer):
         """Sends input over network and calls physics_manager's update
         Called within reactor's thread
         """
-        #print json.dumps(entity.StateItem(self.entity_manager.entities, {'seq': 0}).state())
+        #print json.dumps(StateItem(self.entity_manager.entities, {'seq': 0}).state())
         if not self.net.connected():
             print 'Exiting due to disconnect from server'
             reactor.stop()
@@ -76,13 +76,13 @@ class GameLayer(cocos.layer.Layer):
     def update_from_server(self, state):
         start_time = reactor.seconds()
         local_state = self.entity_manager.state_history.get(state['seq'])
-        compare = entity.StateItem.compare(local_state, state)
+        compare = StateItem.compare(local_state, state)
         if not compare:
             to_recompute = self.entity_manager.state_history.get_after(state['seq'])
-            entity.StateItem.restore_entities(self.entity_manager.entities, state['entities'])
+            StateItem.restore_entities(self.entity_manager.entities, state['entities'])
             for st in to_recompute:
                 self.physics_manager.update(config.tick, st['input'])
-                new_hist_item = entity.StateItem(self.entity_manager.entities, st['input']).full_state()
+                new_hist_item = StateItem(self.entity_manager.entities, st['input']).full_state()
                 self.entity_manager.state_history.replace(st['seq'], new_hist_item)
             print 'update_from_server took', reactor.seconds() - start_time
             print 'recomputed', len(to_recompute), 'states'

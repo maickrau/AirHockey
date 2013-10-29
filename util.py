@@ -1,4 +1,4 @@
-import cocos.euclid as eu
+import euclid as eu
 
 unit_vec_x = eu.Vector2(1, 0)
 unit_vec_y = eu.Vector2(0, 1)

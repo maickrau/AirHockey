@@ -1,5 +1,5 @@
 import config
-import cocos.euclid as eu
+import euclid as eu
 
 import time
 from math import copysign

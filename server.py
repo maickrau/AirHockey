@@ -1,10 +1,10 @@
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'cocos2d-0.5.5'))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'pyglet-1.1.4'))
+# sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'cocos2d-0.5.5'))
+# sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'pyglet-1.1.4'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'Twisted-13.1.0'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'autobahn-0.6.4'))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'zope-3.8.0'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'zope.interface-3.8.0', 'src'))
 
 from twisted.internet import reactor
 from autobahn.websocket import WebSocketServerFactory, \
@@ -14,7 +14,7 @@ from autobahn.websocket import WebSocketServerFactory, \
 import json
 import traceback
 
-from entity import EntityManager, StateItem, History
+from state import EntityManager, StateItem, History
 from physics import PhysicsManager
 import config
 

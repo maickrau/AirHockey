@@ -1,15 +1,28 @@
-from pyglet.window import key
+# from pyglet.window import key
 
+# bindings = {
+#     key.LEFT: 'left',
+#     key.RIGHT: 'right',
+#     key.UP: 'up',
+#     key.DOWN: 'down',
+
+#     key.A: 'left2',
+#     key.D: 'right2',
+#     key.W: 'up2',
+#     key.S: 'down2',
+# }
+
+# the server should not import cocos or pyglet
 bindings = {
-    key.LEFT: 'left',
-    key.RIGHT: 'right',
-    key.UP: 'up',
-    key.DOWN: 'down',
+    65361: 'left',
+    65363: 'right',
+    65362: 'up',
+    65364: 'down',
 
-    key.A: 'left2',
-    key.D: 'right2',
-    key.W: 'up2',
-    key.S: 'down2',
+    97: 'left2',
+    100: 'right2',
+    119: 'up2',
+    115: 'down2',
 }
 
 tick = 0.01
@@ -27,3 +40,6 @@ width = 400
 
 server_url = "ws://localhost:54321"
 state_history_size = 100
+
+# print key.LEFT, key.RIGHT, key.UP, key.DOWN
+# print key.A, key.D, key.W, key.S
