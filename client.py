@@ -3,20 +3,29 @@ from autobahn.websocket import WebSocketClientFactory, WebSocketClientProtocol, 
 
 import config
 import json
+import traceback
 
 class HockeyClientProtocol(WebSocketClientProtocol):
 
     def sendHello(self):
         self.sendMessage(json.dumps({'type': 'hello'}))
 
-    def onOpen(self):
-        #self.sendHello()
+    def onConnect(self, resp):
+        self.sendHello()
         self.factory.proto = self
         self.connected = True
+        print 'onConnect to', resp.peerstr
 
     def onMessage(self, msg, binary):
-        self.factory.entity_manager.compare_server_state(json.loads(msg))
-        # print "Got message: " + msg
+        #print "Got message: " + msg
+        msg = json.loads(msg)
+        msg_type = msg.get('type', '')
+        if msg_type == 'waiting':
+            print 'Waiting for party...'
+        elif msg_type == 'pre_init':
+            self.factory.game_layer.pre_init(msg)
+        else: # state update
+            self.factory.game_layer.update_from_server(msg)
         # reactor.callLater(1, self.sendHello)
 
     def onClose(self, wasClean, code, reason):
@@ -24,14 +33,15 @@ class HockeyClientProtocol(WebSocketClientProtocol):
         self.connected = False
 
 class Client():
-    def __init__(self, entity_manager):
-        self.factory = WebSocketClientFactory(config.server_url, debug = False)
+    def __init__(self, game_layer):
+        self.factory = WebSocketClientFactory(config.server_url, debug = True)
         self.factory.protocol = HockeyClientProtocol
-        self.factory.entity_manager = entity_manager
+        self.factory.game_layer = game_layer
         connectWS(self.factory)
 
     def send_msg(self, msg):
         msg_json = json.dumps(msg)
+        #print 'Sending message:', msg_json
         if not hasattr(self.factory, 'proto'):
             return
         #reactor.callFromThread(self.factory.proto.sendMessage, msg_json)

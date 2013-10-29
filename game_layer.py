@@ -18,22 +18,25 @@ class GameLayer(cocos.layer.Layer):
 
     def __init__(self):
         super(GameLayer, self).__init__()
-        self.keys_pressed = set()
-        self.entity_manager = entity.EntityManager()
-        self.input_manager = input.InputManager()
-        self.physics_manager = physics.PhysicsManager(self.entity_manager.entities)
-        self.net = client.Client(self.entity_manager)
-        self.state_history = []
 
+        self.net = client.Client(self)
+        self.entity_manager = entity.EntityManager(0)
+
+        #Schedule the render method
+        self.schedule(self.entity_manager.render)
+        # start Twisted's reactor in another thread
+        Thread(target=reactor.run, kwargs={'installSignalHandlers': 0}).start()
+
+    def pre_init(self, msg):
+        self.input_manager = input.InputManager(msg['num'])
+        self.physics_manager = physics.PhysicsManager(self.entity_manager.entities)
+        
         #Add entities to layer
         for e in self.entity_manager.entities:
             self.add(e)
 
-        #Schedule the render method
-        self.schedule(self.entity_manager.render)
         # Set a timer-based updater for internal state
         self.updater(self.update_state, config.tick)
-        Thread(target=reactor.run, kwargs={'installSignalHandlers': 0}).start()
 
     def updater(self, func, interval):
         """Thread-based timer 
@@ -56,8 +59,10 @@ class GameLayer(cocos.layer.Layer):
         """
         #print json.dumps(entity.StateItem(self.entity_manager.entities, {'seq': 0}).state())
         if not self.net.connected():
-            print 'Waiting for connection to server...'
-            return
+            print 'Exiting due to disconnect from server'
+            reactor.stop()
+            cocos.director.director.pop()
+
         start = reactor.seconds()
         self.input_manager.serial['seq'] += 1
         # the copy of the input state is used to ensure it's constant during 
@@ -68,12 +73,28 @@ class GameLayer(cocos.layer.Layer):
         self.entity_manager.add_to_history(input_state)
         print 'seq:', self.input_manager.serial['seq'], 'spent time:', reactor.seconds() - start
 
+    def update_from_server(self, state):
+        start_time = reactor.seconds()
+        local_state = self.entity_manager.state_history.get(state['seq'])
+        compare = entity.StateItem.compare(local_state, state)
+        if not compare:
+            to_recompute = self.entity_manager.state_history.get_after(state['seq'])
+            entity.StateItem.restore_entities(self.entity_manager.entities, state['entities'])
+            for st in to_recompute:
+                self.physics_manager.update(config.tick, st['input'])
+                new_hist_item = entity.StateItem(self.entity_manager.entities, st['input']).full_state()
+                self.entity_manager.state_history.replace(st['seq'], new_hist_item)
+            print 'update_from_server took', reactor.seconds() - start_time
+            print 'recomputed', len(to_recompute), 'states'
+
 
     def on_key_press(self, key, modifiers):
-        self.input_manager.update_key(key, 1)
+        if hasattr(self, 'input_manager'):
+            self.input_manager.update_key(key, 1)
 
     def on_key_release(self, key, modifiers):
-        self.input_manager.update_key(key, 0)
+        if hasattr(self, 'input_manager'):
+            self.input_manager.update_key(key, 0)
 
     def on_close(self):
         print 'closing'

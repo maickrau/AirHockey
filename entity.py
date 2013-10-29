@@ -11,16 +11,15 @@ class EntityManager():
         self.state_history = History()
 
     def _generate_entities(self, server=0):
-        if server:
-            ball1 = PhysicsBall(eu.Point2(100, 100), 'letters')
-            ball2 = PhysicsBall(eu.Point2(300, 100), 'arrows')
-            puck = PhysicsBall(eu.Point2(200, 200), 'puck')
-        else:
-            ball1 = Ball(eu.Point2(100, 100), 'letters')
-            ball2 = Ball(eu.Point2(300, 100), 'arrows')
-            puck = Ball(eu.Point2(200, 200), 'puck')
+        BallClass = server and PhysicsBall or Ball
 
-        return [ball1, ball2, puck]
+        ball1_1 = BallClass(eu.Point2(100, 100), 'letters1')
+        ball1_2 = BallClass(eu.Point2(300, 100), 'arrows1')
+        ball2_1 = BallClass(eu.Point2(100, 700), 'letters2')
+        ball2_2 = BallClass(eu.Point2(300, 700), 'arrows2')
+        puck = BallClass(eu.Point2(200, 400), 'puck')
+
+        return [ball1_1, ball1_2, ball2_1, ball2_2, puck]
 
 
     def _should_render(self, old, new):
@@ -41,6 +40,7 @@ class EntityManager():
         print 'compare result',  StateItem.compare(local_state, state)
 
 
+
 class History:
     def __init__(self):
         self.hist = []
@@ -53,7 +53,23 @@ class History:
         self.hist.append(item)
 
     def get(self, seq):
-        return self.hist[seq - self.min]
+        idx = seq - self.min
+        if idx >= len(self.hist): return None
+        item = self.hist[idx]
+        assert item['seq'] == seq, 'Item seq: %d, requested seq: %d' % (item['seq'], seq)
+        return item
+
+    def get_after(self, seq):
+        idx = seq - self.min + 1
+        return self.hist[idx:]
+
+    def replace(self, seq, item):
+        idx = seq - self.min
+        self.hist[idx] = item
+
+    def delete(self, seq):
+        self.min += 1
+        del self.hist[0]
 
 class StateItem:
     # physics parameters to be included in history
@@ -77,10 +93,20 @@ class StateItem:
         else:
             return prop
 
+    @staticmethod
+    def unserialize_property(prop):
+        if type(prop) == list:
+            return eu.Point2(prop[0], prop[1])
+        else:
+            return prop
+
+    @staticmethod
     def restore_entities(ents, state_data):
         for i, ent in enumerate(ents):
-            for p in self.params:
-                ent.__setattribute__(p, state_data[i][p])
+            for p in StateItem.params:
+                new_prop = StateItem.unserialize_property(state_data[i][p])
+                #print 'setting prop', p, 'in', ent.ident, 'to', new_prop
+                ent.__setattr__(p, new_prop)
 
     def state(self):
         return {'entities': self.entities, 'seq': self.seq}
