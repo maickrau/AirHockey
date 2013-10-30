@@ -135,3 +135,7 @@ class PhysicsManager():
                 # top wall
                 b.vel.y *= -1
                 b.pos.y -= 1
+
+    def isColliding(entity1, entity2):
+        #TODO implement
+        return False

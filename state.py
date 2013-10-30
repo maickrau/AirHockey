@@ -23,6 +23,11 @@ class EntityManager():
 
         return [ball1_1, ball1_2, ball2_1, ball2_2, puck]
 
+    def update(self, dt):
+        #Update power ups
+        for e in self.entities:
+            if isinstanceof(e, PowerUp):
+                e.update(dt, entities)
 
     def _should_render(self, old, new):
         new = map(round, world_to_view(new))
@@ -47,7 +52,7 @@ class History:
     def __init__(self):
         self.hist = []
         self.min = 1
-    
+
     def add(self, item):
         if len(self.hist) >= config.state_history_size:
             self.min += 1
