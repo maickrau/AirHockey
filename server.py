@@ -66,8 +66,8 @@ class Session:
         client.input_history.add(msg)
         inputs = [msg]
         seq = msg['seq']
-        print 'input msg from client %d, seq %d, server seq %d, client lag %d states' % \
-            (client.num, seq, self.seq, self.seq - seq)
+        # print 'input msg from client %d, seq %d, server seq %d, client lag %d states' % \
+        #     (client.num, seq, self.seq, self.seq - seq)
         # find if there are corresponding inputs for the same state, identified by seq
         for c in self.clients:
             if c == client: continue
@@ -140,7 +140,7 @@ class HockeyServerProtocol(WebSocketServerProtocol):
 
 if __name__ == '__main__':
  
-    factory = WebSocketServerFactory("ws://localhost:54321", debug = True, debugCodePaths = True)
+    factory = WebSocketServerFactory("ws://localhost:54321", debug = False)
     factory.protocol = HockeyServerProtocol
     factory.sm = SessionManager()
     listenWS(factory)

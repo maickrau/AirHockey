@@ -143,7 +143,7 @@ class StateItem:
                     return False
                 for j, val in enumerate(ent[p]):
                     if val != other_prop[j]:
-                        print 'Difference:', ent['ident'], p
+                        print 'Difference:', ent['ident'], p, 'seq:', self['seq']
                         print 'local', ent[p], 'server', other_prop
                         return False
         return True

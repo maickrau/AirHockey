@@ -10,6 +10,7 @@ from threading import Timer, Thread
 
 from copy import deepcopy
 import json
+import random
 
 class GameLayer(cocos.layer.Layer):
 
@@ -19,8 +20,15 @@ class GameLayer(cocos.layer.Layer):
     def __init__(self):
         super(GameLayer, self).__init__()
 
-        self.net = client.Client(self)
         self.entity_manager = EntityManager(0)
+        self.skip = 0
+        self.seq = self.server_seq = 0
+        self.soft_skip_count = self.hard_skip_count = 0
+
+        if not config.single_player:
+            self.net = client.Client(self)
+        else:
+            self.pre_init({'num': '1'})
 
         #Schedule the render method
         self.schedule(self.entity_manager.render)
@@ -58,23 +66,45 @@ class GameLayer(cocos.layer.Layer):
         Called within reactor's thread
         """
         #print json.dumps(StateItem(self.entity_manager.entities, {'seq': 0}).state())
-        if not self.net.connected():
-            print 'Exiting due to disconnect from server'
-            reactor.stop()
-            cocos.director.director.pop()
-
         start = reactor.seconds()
+        if not config.single_player:
+            if not self.net.connected():
+                print 'Exiting due to disconnect from server'
+                self.shutdown()
+
+            
+            seq_diff = self.seq - self.server_seq
+            if seq_diff >= config.hard_skip_thres:
+                self.hard_skip_count += 1
+                print 'hard skip, seq', self.seq, 'server', self.server_seq, 'count', self.hard_skip_count
+                if self.hard_skip_count > config.state_history_size:
+                    print 'No updates from server, shutting down'
+                    self.shutdown()
+                # self.skip = 0
+                return
+            elif seq_diff >= config.soft_skip_thres:
+                if not self.soft_skip_count % config.soft_skip_period:
+                    self.soft_skip_count += 1
+                    print 'soft skip, seq', self.seq, 'server', self.server_seq, 'diff', seq_diff, 'count', self.soft_skip_count
+                    return
+            else:
+                self.soft_skip_count = self.hard_skip_count = 0
+
         self.input_manager.serial['seq'] += 1
+        self.seq += 1
         # the copy of the input state is used to ensure it's constant during 
         # sending to server and physics computation
         input_state = deepcopy(self.input_manager.serial)
-        self.net.send_msg(input_state)
+        if not config.single_player:
+            self.net.send_msg(input_state)
         self.physics_manager.update(dt, input_state)
         self.entity_manager.add_to_history(input_state)
-        print 'seq:', self.input_manager.serial['seq'], 'spent time:', reactor.seconds() - start
+        #print 'seq:', self.input_manager.serial['seq'], 'spent time:', reactor.seconds() - start
 
     def update_from_server(self, state):
         start_time = reactor.seconds()
+
+        self.server_seq = state['seq']
         local_state = self.entity_manager.state_history.get(state['seq'])
         compare = StateItem.compare(local_state, state)
         if not compare:
@@ -97,5 +127,9 @@ class GameLayer(cocos.layer.Layer):
             self.input_manager.update_key(key, 0)
 
     def on_close(self):
-        print 'closing'
+        print 'Close button pressed, shutting down'
+        self.shutdown()
+
+    def shutdown(self):
         reactor.stop()
+        cocos.director.director.pop()

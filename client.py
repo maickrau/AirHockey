@@ -34,7 +34,7 @@ class HockeyClientProtocol(WebSocketClientProtocol):
 
 class Client():
     def __init__(self, game_layer):
-        self.factory = WebSocketClientFactory(config.server_url, debug = True)
+        self.factory = WebSocketClientFactory(config.server_url, debug = False)
         self.factory.protocol = HockeyClientProtocol
         self.factory.game_layer = game_layer
         connectWS(self.factory)
