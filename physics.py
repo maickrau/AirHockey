@@ -9,10 +9,18 @@ from util import *
 
 class PhysicsManager():
 
-    def __init__(self, balls):
-        self.balls = balls
+    def __init__(self, entities):
+        self.balls = []
+        self.walls = []
+        self.wall_corners = []
         self.prev_time = time.time()
-        self.walls = {}
+        for e in entities:
+            if isinstance(e, entity.Ball):
+                self.balls.append(e)
+            if isinstance(e, entity.Wall):
+                self.walls.append(e)
+                self.wall_corners.append(entity.WallCorner(e, 0))
+                self.wall_corners.append(entity.WallCorner(e, 1))
 
     def read_input(self, state, ident):
         input_data = state.get(ident)
@@ -30,7 +38,6 @@ class PhysicsManager():
             self._update_acc(ball, movement)
             self._update_vel(ball, dt)
         self.collide()
-        self.collide_walls()
         for ball in self.balls:
             self.update_pos(ball, dt)
         self.prev_time = time.time()
@@ -89,8 +96,47 @@ class PhysicsManager():
                     if b2.collidable:
                         if self.isColliding(b1, b2):
                             self._collide_two_balls(b1, b2)
+                for j in range(len(self.walls)):
+                    w2 = self.walls[j]
+                    if w2.collidable:
+                        if self.isColliding(b1, w2):
+                            self._collide_ball_with_wall(b1, w2)
+                for j in range(len(self.wall_corners)):
+                    c2 = self.wall_corners[j]
+                    if c2.collidable:
+                        if self.isColliding(b1, c2):
+                            self._collide_ball_with_corner(b1, c2)
+
+    def _collide_ball_with_corner(self, ball, corner):
+        #collide a moving ball with a static wallcorner (aka static ball)
+        coefficient_of_restitution = ball.elasticity*corner.elasticity
+        relative_position = ball.pos-corner.pos
+        relative_direction = relative_position.normalized()
+        #push ball away from corner
+        overlap = (ball.radius+corner.radius)-relative_position.magnitude()
+        ball.pos += relative_direction * overlap
+        #bounce ball off corner
+        tangent_vel = vec_project(ball.vel, relative_direction)
+        ball.vel -= tangent_vel*(1.0+coefficient_of_restitution)
+
+    def _collide_ball_with_wall(self, ball, wall):
+        #collide a moving ball with a static wall (only flat part)
+        coefficient_of_restitution = ball.elasticity*wall.elasticity
+        distance = wall.tangent.dot(ball.pos-wall.start)
+        if (distance > 0):
+            side = 1
+        else:
+            side = -1
+        #push ball away from wall
+        overlap = abs(ball.radius)-abs(distance)
+        ball.pos += wall.tangent*overlap*side
+        #bounce ball backwards
+        tangent_vel = vec_project(ball.vel, wall.tangent)
+        ball.vel -= tangent_vel*(1.0+coefficient_of_restitution)
+
 
     def _collide_two_balls(self, ball1, ball2):
+        #collide two moving balls
         relative_position = ball2.pos-ball1.pos #ball2's position from ball1's frame of reference
         relative_direction = relative_position.normalized();
         coefficient_of_restitution = ball1.elasticity*ball2.elasticity
@@ -118,29 +164,23 @@ class PhysicsManager():
         ball2.vel += center_of_momentum
         return
 
-
-    def collide_walls(self):
-        for b in self.balls:
-            if b.pos.x < b.radius:
-                # left wall
-                b.vel.x *= -1
-                # prevent sticking to the wall
-                b.pos.x += 1
-            if config.width - b.pos.x < b.radius:
-                # right wall
-                b.vel.x *= -1
-                b.pos.x -= 1
-            if b.pos.y < b.radius:
-                # bottom wall
-                b.vel.y *= -1
-                b.pos.y += 1
-            if config.height - b.pos.y < b.radius:
-                # top wall
-                b.vel.y *= -1
-                b.pos.y -= 1
+    def _does_ball_collide_with_wall(self, wall, ball):
+        if abs(wall.tangent.dot(ball.pos-wall.start)) <= ball.radius:
+            inside = wall.direction.dot(ball.pos-wall.start)
+            if inside >= 0 and inside <= wall.length:
+                return True
+        return False
 
     def isColliding(self, entity1, entity2):
-        if isinstance(entity1, entity.Ball) and isinstance(entity1, entity.Ball):
+        if isinstance(entity1, entity.Ball) and isinstance(entity2, entity.Ball):
             return (entity1.pos-entity2.pos).magnitude() < entity1.radius+entity2.radius
+        if isinstance(entity1, entity.Ball) and isinstance(entity2, entity.WallCorner):
+            return (entity1.pos-entity2.pos).magnitude() < entity1.radius+entity2.radius
+        if isinstance(entity1, entity.WallCorner) and isinstance(entity2, entity.Ball):
+            return (entity1.pos-entity2.pos).magnitude() < entity1.radius+entity2.radius
+        if isinstance(entity1, entity.Wall) and isinstance(entity2, entity.Ball):
+            return self._does_ball_collide_with_wall(entity1, entity2)
+        if isinstance(entity1, entity.Ball) and isinstance(entity2, entity.Wall):
+            return self._does_ball_collide_with_wall(entity2, entity1)
         #TODO: other shapes
         return False

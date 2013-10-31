@@ -14,9 +14,11 @@ from autobahn.websocket import WebSocketServerFactory, \
 import json
 import traceback
 
+import config
+config.server = True
+
 from state import EntityManager, StateItem, History
 from physics import PhysicsManager
-import config
 
 class SessionManager:
     def __init__(self):
@@ -140,7 +142,6 @@ class HockeyServerProtocol(WebSocketServerProtocol):
 
 if __name__ == '__main__':
  
-    config.server = True
     factory = WebSocketServerFactory("ws://localhost:54321", debug = False)
     factory.protocol = HockeyServerProtocol
     factory.sm = SessionManager()

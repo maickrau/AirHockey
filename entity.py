@@ -1,5 +1,6 @@
 import config
 import physics
+import euclid as eu
 
 if config.server:
     import serverentity as entityclass
@@ -15,6 +16,26 @@ class Ball(entityclass.Entity):
         self.radius = config.radius
         self.collidable = True
 
+class Wall(entityclass.SpritelessEntity):
+    def __init__(self, start, end, ident):
+        super(Wall, self).__init__(start, ident, "")
+        self.start = start
+        self.end = end
+        self.collidable = True
+        self.direction = (end-start).normalized()
+        self.tangent = eu.Vector2(self.direction.y, -self.direction.x)
+        self.length = (end-start).magnitude()
+
+class WallCorner(entityclass.SpritelessEntity):
+    def __init__(self, wall, which_end):
+        ident = wall.ident + "_corner_" + str(which_end)
+        if which_end == 1:
+            init_pos = wall.end
+        else:
+            init_pos = wall.start
+        super(WallCorner, self).__init__(init_pos, ident, "")
+        self.radius = 0
+        self.collidable = wall.collidable
 
 class PlayerControlledBall(Ball):
 

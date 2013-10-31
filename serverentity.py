@@ -10,3 +10,5 @@ class Entity(object):
 
 	def update(self, dt):
 		print "updating entity"
+
+SpritelessEntity = Entity

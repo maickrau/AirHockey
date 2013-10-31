@@ -11,13 +11,17 @@ class EntityManager():
     def _generate_entities(self, server=0):
 
         import entity
+        wall_up = entity.Wall(eu.Point2(0, 0), eu.Point2(config.width, 0), "wall_up")
+        wall_right = entity.Wall(eu.Point2(config.width, config.height), eu.Point2(config.width, 0), "wall_right")
+        wall_left = entity.Wall(eu.Point2(0, 0), eu.Point2(0, config.height), "wall_left")
+        wall_down = entity.Wall(eu.Point2(0, config.height), eu.Point2(config.width, config.height), "wall_down")
         ball1_1 = entity.Ball(eu.Point2(100, 100), 'letters1')
         ball1_2 = entity.Ball(eu.Point2(300, 100), 'arrows1')
         ball2_1 = entity.Ball(eu.Point2(100, 700), 'letters2')
         ball2_2 = entity.Ball(eu.Point2(300, 700), 'arrows2')
         puck = entity.Ball(eu.Point2(200, 400), 'puck')
 
-        return [ball1_1, ball1_2, ball2_1, ball2_2, puck]
+        return [ball1_1, ball1_2, ball2_1, ball2_2, puck, wall_up, wall_right, wall_left, wall_down]
 
     def update(self, dt):
         #Update power ups
