@@ -40,7 +40,11 @@ class SessionManager:
     def delete(self, client):
         if client in self.pending:
             self.pending.remove(client)
-        if self.assoc.get(client.req.peerstr):
+            for c in self.pending:
+                c.send_msg({'type': 'leave'})
+        session = self.assoc.get(client.req.peerstr)
+        if session:
+            session.broadcast_msg({'type': 'leave'})
             del self.assoc[client.req.peerstr]
 
 class Session:
@@ -62,6 +66,8 @@ class Session:
         msg_type = msg.get('type', '')
         if msg_type == 'input':
             self.input(client, msg)
+        elif msg_type == 'leaving':
+            self.broadcast_msg({'type': 'leave'})
 
     def input(self, client, msg):
         self.check_input(client, msg)
@@ -95,9 +101,12 @@ class Session:
         for inp in inputs:
             common_inp.update(inp)
         self.physics_manager.update(config.tick, common_inp)
-        item = StateItem(self.entity_manager.entities, {'seq': common_inp['seq']}).state()
+        item = StateItem(self.entity_manager.entities, common_inp).full_state()
         self.seq = common_inp['seq']
-        self.broadcast_msg(item)
+        #self.broadcast_msg(item)
+        for c in self.clients:
+            item['last_seq'] = c.last_seq
+            c.send_msg(item)
 
     def broadcast_msg(self, msg):
         for c in self.clients:
@@ -109,10 +118,6 @@ class HockeyServerProtocol(WebSocketServerProtocol):
     def onConnect(self, req):
         self.req = req
         print 'onConnect from ' + req.peerstr
-        # try:
-        #     self.factory.sm.add(self)
-        # except:
-        #     traceback.print_exc()
 
     def onMessage(self, msg, binary):
         #print 'onMessage: ' + msg

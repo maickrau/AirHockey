@@ -14,10 +14,10 @@ bindings = {
     115: 'down2', # key.S
 }
 
-tick = 0.01
+tick = 0.02
 
 #entities physical properties
-max_vel = 1000.0
+max_vel = 500.0
 acc = 1000.0
 decel = 10.0
 radius = 16.0

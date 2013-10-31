@@ -24,6 +24,9 @@ class HockeyClientProtocol(WebSocketClientProtocol):
             print 'Waiting for party...'
         elif msg_type == 'pre_init':
             self.factory.game_layer.pre_init(msg)
+        elif msg_type == 'leave':
+            print 'Another player left the game, we are leaving too'
+            self.factory.game_layer.shutdown()
         else: # state update
             self.factory.game_layer.update_from_server(msg)
         # reactor.callLater(1, self.sendHello)

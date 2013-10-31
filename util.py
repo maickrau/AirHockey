@@ -1,3 +1,4 @@
+import os, time
 import euclid as eu
 
 unit_vec_x = eu.Vector2(1, 0)
@@ -15,3 +16,9 @@ def world_to_view(v):
     """world coords to view coords; v an eu.Vector2, returns (float, float)"""
     scale_x = scale_y = 1
     return v.x * scale_x, v.y * scale_y
+
+def mstime(start=0.0):
+    if os.name == 'nt':
+        return time.clock() * 1000 - start
+    else:
+        return time.time() * 1000 - start

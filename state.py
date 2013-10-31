@@ -63,12 +63,15 @@ class History:
         idx = seq - self.min
         if idx >= len(self.hist): return None
         item = self.hist[idx]
-        assert item['seq'] == seq, 'Item seq: %d, requested seq: %d' % (item['seq'], seq)
+        assert item['seq'] == seq, 'Item seq: %d, requested seq: %d, idx: %d' % (item['seq'], seq, idx)
         return item
 
     def get_after(self, seq):
         idx = seq - self.min + 1
         return self.hist[idx:]
+
+    def get_last(self):
+        return len(self.hist) and self.hist[-1] or None
 
     def replace(self, seq, item):
         idx = seq - self.min
@@ -115,6 +118,12 @@ class StateItem:
                 #print 'setting prop', p, 'in', ent.ident, 'to', new_prop
                 ent.__setattr__(p, new_prop)
 
+    @staticmethod
+    def copy_entity_data(fr, to):
+        for i, ent in enumerate(fr):
+            for p in StateItem.params:
+                to[i].__setattr__(p, ent.__getattribute__(p))
+
     def state(self):
         return {'entities': self.entities, 'seq': self.seq}
 
@@ -138,13 +147,13 @@ class StateItem:
                 if ent[p] == other_prop:
                     continue
                 if type(ent[p]) != list:
-                    print 'Difference:', ent['ident'], p, 'seq:', self['seq']
-                    print 'local', ent[p], 'server', other_prop
+                    #print 'Difference:', ent['ident'], p, 'seq:', self['seq']
+                    #print 'local', ent[p], 'server', other_prop
                     return False
                 for j, val in enumerate(ent[p]):
                     if val != other_prop[j]:
-                        print 'Difference:', ent['ident'], p, 'seq:', self['seq']
-                        print 'local', ent[p], 'server', other_prop
+                        #print 'Difference:', ent['ident'], p, 'seq:', self['seq']
+                        #print 'local', ent[p], 'server', other_prop
                         return False
         return True
 

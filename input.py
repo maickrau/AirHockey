@@ -1,4 +1,5 @@
 import config
+from copy import deepcopy
 
 class InputManager():
 
@@ -30,3 +31,11 @@ class InputManager():
         if input_data is None:
             return 0
         return input_data[axis]
+
+    def combine(self, remote, local):
+        remote2 = deepcopy(remote)
+        for ident in ['letters', 'arrows']:
+            key = ident + self.num
+            remote2[key] = local[key]
+        remote2['seq'] = local['seq']
+        return remote2
