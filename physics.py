@@ -1,6 +1,7 @@
 import config
 import euclid as eu
 
+import entity
 import time
 from math import copysign
 
@@ -81,11 +82,13 @@ class PhysicsManager():
 
     def collide(self):
         for i in range(len(self.balls)):
-            for j in range(i):
-                b1 = self.balls[i]
-                b2 = self.balls[j]
-                if b1.pos.distance(b2.pos) < b1.radius + b2.radius:
-                    self._collide_two_balls(b1, b2)
+            b1 = self.balls[i]
+            if b1.collidable:
+                for j in range(i):
+                    b2 = self.balls[j]
+                    if b2.collidable:
+                        if self.isColliding(b1, b2):
+                            self._collide_two_balls(b1, b2)
 
     def _collide_two_balls(self, ball1, ball2):
         relative_position = ball2.pos-ball1.pos #ball2's position from ball1's frame of reference
@@ -136,6 +139,8 @@ class PhysicsManager():
                 b.vel.y *= -1
                 b.pos.y -= 1
 
-    def isColliding(entity1, entity2):
-        #TODO implement
+    def isColliding(self, entity1, entity2):
+        if isinstance(entity1, entity.Ball) and isinstance(entity1, entity.Ball):
+            return (entity1.pos-entity2.pos).magnitude() < entity1.radius+entity2.radius
+        #TODO: other shapes
         return False
