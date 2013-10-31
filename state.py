@@ -164,9 +164,3 @@ class StateItem:
         self.mass = config.mass
 
         self.collidable = False
-
-
-class PhysicsBall(object):
-    def __init__(self, init_pos, ident):
-        self.radius = config.radius
-        StateItem.init_entity(self, init_pos, ident)
