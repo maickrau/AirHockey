@@ -27,6 +27,7 @@ mass = 1.0
 height = 800
 width = 400
 
+server = False
 single_player = 0
 server_url = "ws://localhost:54321"
 if len(sys.argv) > 1:

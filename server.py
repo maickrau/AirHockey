@@ -140,6 +140,7 @@ class HockeyServerProtocol(WebSocketServerProtocol):
 
 if __name__ == '__main__':
  
+    config.server = True
     factory = WebSocketServerFactory("ws://localhost:54321", debug = False)
     factory.protocol = HockeyServerProtocol
     factory.sm = SessionManager()

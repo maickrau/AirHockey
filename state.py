@@ -9,17 +9,13 @@ class EntityManager():
         self.state_history = History()
 
     def _generate_entities(self, server=0):
-        if server:
-            BallClass = PhysicsBall
-        else:
-            import entity
-            BallClass = entity.Ball
 
-        ball1_1 = BallClass(eu.Point2(100, 100), 'letters1')
-        ball1_2 = BallClass(eu.Point2(300, 100), 'arrows1')
-        ball2_1 = BallClass(eu.Point2(100, 700), 'letters2')
-        ball2_2 = BallClass(eu.Point2(300, 700), 'arrows2')
-        puck = BallClass(eu.Point2(200, 400), 'puck')
+        import entity
+        ball1_1 = entity.Ball(eu.Point2(100, 100), 'letters1')
+        ball1_2 = entity.Ball(eu.Point2(300, 100), 'arrows1')
+        ball2_1 = entity.Ball(eu.Point2(100, 700), 'letters2')
+        ball2_2 = entity.Ball(eu.Point2(300, 700), 'arrows2')
+        puck = entity.Ball(eu.Point2(200, 400), 'puck')
 
         return [ball1_1, ball1_2, ball2_1, ball2_2, puck]
 
@@ -166,6 +162,8 @@ class StateItem:
         self.decel = config.decel
         self.elasticity = config.elasticity
         self.mass = config.mass
+
+        self.collidable = False
 
 
 class PhysicsBall(object):
