@@ -8,10 +8,27 @@ def vec_project(a, b):
     b_norm = b.normalized()
     return a.dot(b_norm) * b_norm
 
+
 def to_int_pos(pos):
     return map(round, world_to_view(pos))
+
 
 def world_to_view(v):
     """world coords to view coords; v an eu.Vector2, returns (float, float)"""
     scale_x = scale_y = 1
     return v.x * scale_x, v.y * scale_y
+
+
+class Timer():
+
+    def __init__(self, timems):
+        self.totalms = 0
+        self.milliseconds = timems
+
+    def addTime(self, dt):
+        self.totalms += dt
+
+    def isDone(self):
+        if self.milliseconds <= self.totalms:
+            return True
+        return False

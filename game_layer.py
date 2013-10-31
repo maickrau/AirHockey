@@ -38,7 +38,7 @@ class GameLayer(cocos.layer.Layer):
     def pre_init(self, msg):
         self.input_manager = input.InputManager(msg['num'])
         self.physics_manager = physics.PhysicsManager(self.entity_manager.entities)
-        
+
         #Add entities to layer
         for e in self.entity_manager.entities:
             self.add(e)
@@ -47,7 +47,7 @@ class GameLayer(cocos.layer.Layer):
         self.updater(self.update_state, config.tick)
 
     def updater(self, func, interval):
-        """Thread-based timer 
+        """Thread-based timer
         """
         def iteration(first_run=0):
             #if not noexit and not obj.closing:
@@ -72,7 +72,7 @@ class GameLayer(cocos.layer.Layer):
                 print 'Exiting due to disconnect from server'
                 self.shutdown()
 
-            
+
             seq_diff = self.seq - self.server_seq
             if seq_diff >= config.hard_skip_thres:
                 self.hard_skip_count += 1
@@ -92,11 +92,12 @@ class GameLayer(cocos.layer.Layer):
 
         self.input_manager.serial['seq'] += 1
         self.seq += 1
-        # the copy of the input state is used to ensure it's constant during 
+        # the copy of the input state is used to ensure it's constant during
         # sending to server and physics computation
         input_state = deepcopy(self.input_manager.serial)
         if not config.single_player:
             self.net.send_msg(input_state)
+        self.entity_manager.update(dt)
         self.physics_manager.update(dt, input_state)
         self.entity_manager.add_to_history(input_state)
         #print 'seq:', self.input_manager.serial['seq'], 'spent time:', reactor.seconds() - start
@@ -112,6 +113,7 @@ class GameLayer(cocos.layer.Layer):
             StateItem.restore_entities(self.entity_manager.entities, state['entities'])
             for st in to_recompute:
                 self.physics_manager.update(config.tick, st['input'])
+                #TODO Should entitymanager be updated here also???
                 new_hist_item = StateItem(self.entity_manager.entities, st['input']).full_state()
                 self.entity_manager.state_history.replace(st['seq'], new_hist_item)
             print 'update_from_server took', reactor.seconds() - start_time
