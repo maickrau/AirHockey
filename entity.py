@@ -42,8 +42,8 @@ class PlayerControlledBall(Ball):
 
     #Constructor for player controlled ball.
     #Parameter "number" is 1 for left and 2 for right(used to assign controls)
-    def __init__(self, number):
-        super(PlayerControlledBall, self).__init__()
+    def __init__(self, init_pos, ident):
+        super(PlayerControlledBall, self).__init__(init_pos, ident)
 
 class PowerUp(entityclass.Entity):
 
@@ -71,7 +71,9 @@ class StopPowerUp(PowerUp):
             return
         if not self.used:
             for e in entities:
-                if isinstance(e, PlayerControlledBall):
+                #!!! Temporary!!#
+                if False:
+                #if isinstance(e, PlayerControlledBall):
                     if physics.isColliding(self, e):
                         print("This StopPowerUp is colliding with a PlayerControlledBall")
                         self.ball = e
