@@ -89,7 +89,7 @@ class Session:
 
     def check_input(self, client, inp):
         client.last_seq += 1
-        assert inp['seq'] == client.last_seq
+        assert inp['seq'] == client.last_seq, 'Seq in msg: %d last seq %d, client %s' % (inp['seq'], client.last_seq, client.req.peerstr)
         num = str(client.num)
         allowed = ('seq', 'letters' + num, 'arrows' + num)
         for item, data in inp.items():
@@ -100,6 +100,8 @@ class Session:
         common_inp = {}
         for inp in inputs:
             common_inp.update(inp)
+
+        self.entity_manager.update(config.tick)
         self.physics_manager.update(config.tick, common_inp)
         item = StateItem(self.entity_manager.entities, common_inp).full_state()
         self.seq = common_inp['seq']
@@ -120,7 +122,7 @@ class HockeyServerProtocol(WebSocketServerProtocol):
         print 'onConnect from ' + req.peerstr
 
     def onMessage(self, msg, binary):
-        #print 'onMessage: ' + msg
+        #print 'onMessage: ' + msg + ' client ' + self.req.peerstr
         try:
             msg = json.loads(msg)
             msg_type = msg.get('type', '')

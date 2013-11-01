@@ -1,6 +1,7 @@
 import math
 from util import *
 import config
+import entity
 
 class EntityManager():
 
@@ -10,24 +11,24 @@ class EntityManager():
 
     def _generate_entities(self, server=0):
 
-        import entity
         wall_up = entity.Wall(eu.Point2(0, 0), eu.Point2(config.width, 0), "wall_up")
         wall_right = entity.Wall(eu.Point2(config.width, config.height), eu.Point2(config.width, 0), "wall_right")
         wall_left = entity.Wall(eu.Point2(0, 0), eu.Point2(0, config.height), "wall_left")
         wall_down = entity.Wall(eu.Point2(0, config.height), eu.Point2(config.width, config.height), "wall_down")
-        ball1_1 = entity.Ball(eu.Point2(100, 100), 'letters1')
-        ball1_2 = entity.Ball(eu.Point2(300, 100), 'arrows1')
-        ball2_1 = entity.Ball(eu.Point2(100, 700), 'letters2')
-        ball2_2 = entity.Ball(eu.Point2(300, 700), 'arrows2')
+        ball1_1 = entity.PlayerControlledBall(eu.Point2(100, 100), 'letters1')
+        ball1_2 = entity.PlayerControlledBall(eu.Point2(300, 100), 'arrows1')
+        ball2_1 = entity.PlayerControlledBall(eu.Point2(100, 700), 'letters2')
+        ball2_2 = entity.PlayerControlledBall(eu.Point2(300, 700), 'arrows2')
         puck = entity.Ball(eu.Point2(200, 400), 'puck')
+        stopPower = entity.StopPowerUp(eu.Point2(200, 200), 'stopPower')
 
-        return [ball1_1, ball1_2, ball2_1, ball2_2, puck, wall_up, wall_right, wall_left, wall_down]
+        return [ball1_1, ball1_2, ball2_1, ball2_2, puck, wall_up, wall_right, wall_left, wall_down, stopPower]
 
     def update(self, dt):
         #Update power ups
         for e in self.entities:
-            if isinstanceof(e, PowerUp):
-                e.update(dt, entities)
+            if isinstance(e, entity.PowerUp):
+                e.update(dt, self.entities)
 
     def _should_render(self, old, new):
         new = map(round, world_to_view(new))
@@ -46,6 +47,7 @@ class EntityManager():
         local_state = self.state_history.get(state['seq'])
         print 'compare result',  StateItem.compare(local_state, state)
 
+    #TODO ident generator/manager
 
 
 class History:

@@ -22,3 +22,18 @@ def mstime(start=0.0):
         return time.clock() * 1000 - start
     else:
         return time.time() * 1000 - start
+
+
+class Timer():
+
+    def __init__(self, timems):
+        self.totalms = 0
+        self.milliseconds = timems
+
+    def addTime(self, dt):
+        self.totalms += dt
+
+    def isDone(self):
+        if self.milliseconds <= self.totalms:
+            return True
+        return False

@@ -43,7 +43,7 @@ class GameLayer(cocos.layer.Layer):
         self.input_manager = input.InputManager(msg['num'])
         self.physics_manager = physics.PhysicsManager(self.entity_manager.entities)
         self.physics_manager2 = physics.PhysicsManager(self.entity_manager2.entities)
-        
+
         #Add entities to layer
         for e in self.entity_manager.entities:
             self.add(e)
@@ -52,7 +52,7 @@ class GameLayer(cocos.layer.Layer):
         self.updater(self.update_state, config.tick)
 
     def updater(self, func, interval):
-        """Thread-based timer 
+        """Thread-based timer
         """
         def iteration(first_run=0):
             #if not noexit and not obj.closing:
@@ -105,7 +105,7 @@ class GameLayer(cocos.layer.Layer):
 
         self.input_manager.serial['seq'] += 1
         self.seq += 1
-        # the copy of the input state is used to ensure it's constant during 
+        # the copy of the input state is used to ensure it's constant during
         # sending to server and physics computation
         local_input = deepcopy(self.input_manager.serial)
         last_hist_item = self.entity_manager.state_history.get_last()
@@ -114,8 +114,9 @@ class GameLayer(cocos.layer.Layer):
         else:
             input_state = local_input
         if not config.single_player:
-            self.net.send_msg(local_input)
             self.send_times.append(mstime())
+            self.net.send_msg(local_input)
+        self.entity_manager.update(dt)
         self.physics_manager.update(dt, input_state)
         self.entity_manager.add_to_history(input_state)
         #print 'seq:', self.input_manager.serial['seq'], 'spent time:', mstime(start)
@@ -143,6 +144,7 @@ class GameLayer(cocos.layer.Layer):
             to_recompute = self.entity_manager.state_history.get_after(state['seq'])
             for st in to_recompute:
                 combined_input = self.input_manager.combine(state['input'], st['input'])
+                self.entity_manager2.update(config.tick)
                 self.physics_manager2.update(config.tick, combined_input)
                 new_hist_item = StateItem(self.entity_manager2.entities, combined_input).full_state()
                 self.entity_manager.state_history.replace(st['seq'], new_hist_item)
@@ -168,10 +170,11 @@ class GameLayer(cocos.layer.Layer):
             self.updater_delayed.cancel()
         self.net.send_msg({'type': 'leaving'})
         if not config.single_player and self.seq:
+            total_states = self.seq + self.total_soft_skip_count + self.total_hard_skip_count
             print 'Last seq %d, last server seq %d' % (self.seq, self.server_seq)
-            soft_percent = self.total_soft_skip_count * 100.0 / self.seq
+            soft_percent = self.total_soft_skip_count * 100.0 / total_states
             print 'Total soft skips: %d - %.1f%%' % (self.total_soft_skip_count, soft_percent)
-            hard_percent = self.total_hard_skip_count * 100.0 / self.seq
+            hard_percent = self.total_hard_skip_count * 100.0 / total_states
             print 'Total hard skips: %d - %.1f%%' % (self.total_hard_skip_count, hard_percent)
         reactor.stop()
         cocos.director.director.pop()

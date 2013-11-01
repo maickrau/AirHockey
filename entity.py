@@ -1,5 +1,6 @@
 import config
 import physics
+import util
 import euclid as eu
 
 if config.server:
@@ -41,8 +42,8 @@ class PlayerControlledBall(Ball):
 
     #Constructor for player controlled ball.
     #Parameter "number" is 1 for left and 2 for right(used to assign controls)
-    def __init__(self, number):
-        super(PlayerControlledBall, self).__init__()
+    def __init__(self, init_pos, ident):
+        super(PlayerControlledBall, self).__init__(init_pos, ident)
 
 class PowerUp(entityclass.Entity):
 
@@ -56,37 +57,36 @@ class PowerUp(entityclass.Entity):
         raise NotImplementedError("This method should be implemented in child!")
 
 
-#Speed up the player ball for limited time
-class SpeedPowerUp(PowerUp):
+#Immobilizes the ball for limited time
+class StopPowerUp(PowerUp):
 
-    def __init__(self):
-        super(SpeedPowerUp, self).__init__()
-
-    def update(self, dt, entities):
-        for e in entities:
-            if physics.isColliding(self, e):
-                if isinstanceof(e, PlayerControlledBall):
-                    print("This SpeedPowerUp is colliding with a PlayerControlledBall")
-                    trigger(e)
-
-    def trigger(ball):
-        #TODO implement
-        print("")
-
-
-#Grows the size of the player ball for limited time
-class GrowPowerUp(PowerUp):
-
-    def __init__(self):
-        super(SpeedPowerUp, self).__init__()
+    def __init__(self, init_pos, ident):
+        super(StopPowerUp, self).__init__(init_pos, ident, "res/stop.png")
+        self.used = False
+        #temp radius, used only in physics atm because no other shapes
+        self.radius = config.radius
 
     def update(self, dt, entities):
-        for e in entities:
-            if physics.isColliding(self, e):
-                if isinstanceof(e, PlayerControlledBall):
-                    print("This GrowPowerUp is colliding with a PlayerControlledBall")
-                    trigger(e)
+        if self.remove:
+            return
+        if not self.used:
+            for e in entities:
+                #!!! Temporary!!#
+                if False:
+                #if isinstance(e, PlayerControlledBall):
+                    if physics.isColliding(self, e):
+                        print("This StopPowerUp is colliding with a PlayerControlledBall")
+                        self.ball = e
+                        self.trigger()
+        elif self.used:
+            self.timer.addTime(dt)
+            if self.timer.isDone():
+                self.remove = True
+                self.ball.maxVel = config.maxVel
+            else:
+                self.ball.maxVel = 0
 
-    def trigger(ball):
-        #TODO implement
-        print("")
+    def _trigger(self):
+        self.timer = util.Timer(5000)
+        self.visible = False
+        self.used = True
