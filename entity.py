@@ -74,7 +74,7 @@ class StopPowerUp(PowerUp):
                 #!!! Temporary!!#
                 if False:
                 #if isinstance(e, PlayerControlledBall):
-                    if physics.isColliding(self, e):
+                    if physics.PhysicsManager.isColliding(self, e):
                         print("This StopPowerUp is colliding with a PlayerControlledBall")
                         self.ball = e
                         self.trigger()

@@ -94,17 +94,17 @@ class PhysicsManager():
                 for j in range(i):
                     b2 = self.balls[j]
                     if b2.collidable:
-                        if self.isColliding(b1, b2):
+                        if PhysicsManager.isColliding(b1, b2):
                             self._collide_two_balls(b1, b2)
                 for j in range(len(self.walls)):
                     w2 = self.walls[j]
                     if w2.collidable:
-                        if self.isColliding(b1, w2):
+                        if PhysicsManager.isColliding(b1, w2):
                             self._collide_ball_with_wall(b1, w2)
                 for j in range(len(self.wall_corners)):
                     c2 = self.wall_corners[j]
                     if c2.collidable:
-                        if self.isColliding(b1, c2):
+                        if PhysicsManager.isColliding(b1, c2):
                             self._collide_ball_with_corner(b1, c2)
 
     def _collide_ball_with_corner(self, ball, corner):
@@ -164,23 +164,29 @@ class PhysicsManager():
         ball2.vel += center_of_momentum
         return
 
-    def _does_ball_collide_with_wall(self, wall, ball):
+    @staticmethod
+    def _does_ball_collide_with_wall( wall, ball):
         if abs(wall.tangent.dot(ball.pos-wall.start)) <= ball.radius:
             inside = wall.direction.dot(ball.pos-wall.start)
             if inside >= 0 and inside <= wall.length:
                 return True
         return False
 
-    def isColliding(self, entity1, entity2):
+    @staticmethod
+    def isColliding(entity1, entity2):
         if isinstance(entity1, entity.Ball) and isinstance(entity2, entity.Ball):
             return (entity1.pos-entity2.pos).magnitude() < entity1.radius+entity2.radius
         if isinstance(entity1, entity.Ball) and isinstance(entity2, entity.WallCorner):
             return (entity1.pos-entity2.pos).magnitude() < entity1.radius+entity2.radius
         if isinstance(entity1, entity.WallCorner) and isinstance(entity2, entity.Ball):
             return (entity1.pos-entity2.pos).magnitude() < entity1.radius+entity2.radius
+        if isinstance(entity1, entity.Ball) and isinstance(entity2, entity.PowerUp):
+            return (entity1.pos-entity2.pos).magnitude() < entity1.radius+entity2.radius
+        if isinstance(entity1, entity.PowerUp) and isinstance(entity2, entity.Ball):
+            return (entity1.pos-entity2.pos).magnitude() < entity1.radius+entity2.radius
         if isinstance(entity1, entity.Wall) and isinstance(entity2, entity.Ball):
-            return self._does_ball_collide_with_wall(entity1, entity2)
+            return PhysicsManager._does_ball_collide_with_wall(entity1, entity2)
         if isinstance(entity1, entity.Ball) and isinstance(entity2, entity.Wall):
-            return self._does_ball_collide_with_wall(entity2, entity1)
+            return PhysicsManager._does_ball_collide_with_wall(entity2, entity1)
         #TODO: other shapes
         return False
