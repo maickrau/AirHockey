@@ -16,6 +16,9 @@ from cocos.menu import *
 from cocos.scene import *
 from cocos.layer import *
 
+import config
+import game_layer
+
 class MainMenu(Menu):
 
 #    arial=font.load('Arial',26,bold=True, italic=False)
@@ -50,8 +53,8 @@ class MainMenu(Menu):
         item2= MultipleMenuItem('Resolution: ',
                         self.on_multiple_callback,
                         resolutions)
-        item3 = MenuItem('Server Game', self.on_callback )
-        item4 = MenuItem('Single Player', self.on_callback )
+        item3 = MenuItem('Server Game', self.start_game, 0)
+        item4 = MenuItem('Single Player', self.start_game, 1)
         item5 = MenuItem('High Score', self.on_callback)
 		
         resolutions = ['ON', 'OFF']
@@ -70,6 +73,13 @@ class MainMenu(Menu):
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
         self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8])
 
+
+    def start_game(self, single):
+        config.single_player = single
+        config.server = False
+        game = game_layer.GameLayer()
+        scene = Scene(game)
+        director.run(scene)
 		
     def on_quit( self ):
         pyglet.app.exit()

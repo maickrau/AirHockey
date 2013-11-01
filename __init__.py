@@ -12,15 +12,14 @@ import config
 import pyglet
 from pyglet import clock
 
-import game_layer
-
-execfile('menu.py')
+import menu
 
 #Entry point
 if __name__ == "__main__":
     #clock.set_fps_limit(120)
     cocos.director.director.init(vsync=True, height=config.height, width=config.width)
     cocos.director.director.show_FPS = True
-    game = game_layer.GameLayer()
-    scene = cocos.scene.Scene(game)
-    cocos.director.director.run(scene)
+
+    pyglet.font.add_directory('.')
+
+    cocos.director.director.run( cocos.scene.Scene( menu.MainMenu() ) )
