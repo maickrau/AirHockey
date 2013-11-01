@@ -168,7 +168,8 @@ class GameLayer(cocos.layer.Layer):
     def shutdown(self):
         if hasattr(self, 'updater_delayed') and self.updater_delayed.active():
             self.updater_delayed.cancel()
-        self.net.send_msg({'type': 'leaving'})
+        if not config.single_player:
+			self.net.send_msg({'type': 'leaving'})
         if not config.single_player and self.seq:
             total_states = self.seq + self.total_soft_skip_count + self.total_hard_skip_count
             print 'Last seq %d, last server seq %d' % (self.seq, self.server_seq)

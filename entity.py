@@ -72,12 +72,12 @@ class StopPowerUp(PowerUp):
         if not self.used:
             for e in entities:
                 #!!! Temporary!!#
-                if False:
-                #if isinstance(e, PlayerControlledBall):
+                #if False:
+                if isinstance(e, PlayerControlledBall):
                     if physics.PhysicsManager.isColliding(self, e):
                         print("This StopPowerUp is colliding with a PlayerControlledBall")
                         self.ball = e
-                        self.trigger()
+                        self._trigger()
         elif self.used:
             self.timer.addTime(dt)
             if self.timer.isDone():

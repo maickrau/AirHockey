@@ -14,6 +14,8 @@ from pyglet import clock
 
 import game_layer
 
+execfile('menu.py')
+
 #Entry point
 if __name__ == "__main__":
     #clock.set_fps_limit(120)
