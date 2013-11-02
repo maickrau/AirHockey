@@ -9,6 +9,7 @@ class Entity(cocos.sprite.Sprite):
         StateItem.init_entity(self, init_pos, ident)
         self.old_int_pos = to_int_pos(init_pos)
         self.position = world_to_view(init_pos)
+        self.dont_collide = []
 
     def update(self, dt):
         print "updating entity"
@@ -20,6 +21,7 @@ class SpritelessEntity(cocos.cocosnode.CocosNode):
         StateItem.init_entity(self, init_pos, ident)
         self.old_int_pos = to_int_pos(init_pos)
         self.position = world_to_view(init_pos)
+        self.dont_collide = []
 
     def update(self, dt):
         print "updating entity"

@@ -27,6 +27,12 @@ mass = 1.0
 height = 800
 width = 400
 
+#players "own walls" distance from goal
+goal_wall_distance = 100
+
+goal_width = 200
+goal_depth = 50
+
 server = False
 single_player = 0
 server_url = "ws://localhost:54321"

@@ -27,6 +27,10 @@ class Wall(entityclass.SpritelessEntity):
         self.tangent = eu.Vector2(self.direction.y, -self.direction.x)
         self.length = (end-start).magnitude()
 
+class WallStrip(entityclass.SpritelessEntity):
+    def __init__(self, ident):
+        super(WallStrip, self).__init__(eu.Vector2(0, 0), ident, "")
+
 class WallCorner(entityclass.SpritelessEntity):
     def __init__(self, wall, which_end):
         ident = wall.ident + "_corner_" + str(which_end)
@@ -35,6 +39,7 @@ class WallCorner(entityclass.SpritelessEntity):
         else:
             init_pos = wall.start
         super(WallCorner, self).__init__(init_pos, ident, "")
+        self.wall = wall
         self.radius = 0
         self.collidable = wall.collidable
 

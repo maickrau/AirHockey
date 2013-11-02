@@ -21,6 +21,16 @@ class PhysicsManager():
                 self.walls.append(e)
                 self.wall_corners.append(entity.WallCorner(e, 0))
                 self.wall_corners.append(entity.WallCorner(e, 1))
+            if isinstance(e, entity.WallStrip):
+                self._unstrip_wall(e)
+
+    def _unstrip_wall(self, wallstrip):
+        for i in range(len(wallstrip.points)-1):
+            new_wall = entity.Wall(wallstrip.points[i], wallstrip.points[i+1], wallstrip.ident+"_wall_"+str(i))
+            self.walls.append(new_wall)
+            self.wall_corners.append(entity.WallCorner(new_wall, 0))
+            if i == len(wallstrip.points)-2:
+                self.wall_corners.append(entity.WallCorner(new_wall, 1))
 
     def read_input(self, state, ident):
         input_data = state.get(ident)
@@ -174,6 +184,8 @@ class PhysicsManager():
 
     @staticmethod
     def isColliding(entity1, entity2):
+        if entity2 in entity1.dont_collide or entity1 in entity2.dont_collide:
+            return False
         if isinstance(entity1, entity.Ball) and isinstance(entity2, entity.Ball):
             return (entity1.pos-entity2.pos).magnitude() < entity1.radius+entity2.radius
         if isinstance(entity1, entity.Ball) and isinstance(entity2, entity.WallCorner):
