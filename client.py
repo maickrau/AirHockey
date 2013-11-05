@@ -27,6 +27,10 @@ class HockeyClientProtocol(WebSocketClientProtocol):
         elif msg_type == 'leave':
             print 'Another player left the game, we are leaving too'
             self.factory.game_layer.shutdown()
+        elif msg_type == 'pause':
+            self.factory.game_layer.do_pause()
+        elif msg_type == 'resume':
+            self.factory.game_layer.do_resume()
         else: # state update
             self.factory.game_layer.update_from_server(msg)
         # reactor.callLater(1, self.sendHello)

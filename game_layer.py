@@ -1,10 +1,12 @@
 import cocos
+from pyglet.window import key
 import physics
 import input
 import config
 import client
 from state import EntityManager, StateItem, History
 from util import mstime
+import pause
 
 from twisted.internet import reactor
 from threading import Timer, Thread
@@ -23,7 +25,7 @@ class GameLayer(cocos.layer.Layer):
 
         self.entity_manager = EntityManager(0)
         self.entity_manager2 = EntityManager(0)
-        self.skip = 0
+        self.paused = self.pausing = 0
         self.seq = self.server_seq = 0
         self.soft_skip_count = self.hard_skip_count = 0
         self.total_soft_skip_count = self.total_hard_skip_count = 0
@@ -33,6 +35,8 @@ class GameLayer(cocos.layer.Layer):
             self.net = client.Client(self)
         else:
             self.pre_init({'num': '1'})
+
+        pause.game_layer = self
 
         #Schedule the render method
         self.schedule(self.entity_manager.render)
@@ -66,6 +70,39 @@ class GameLayer(cocos.layer.Layer):
 
         iteration(1)
 
+    def req_pause(self):
+        """Executed on pause button click
+        """
+        print 'req_pause'
+        self.pausing = 1
+        if config.single_player:
+            self.do_pause()
+            return
+        self.net.send_msg({'type': 'req_pause'})
+
+    def req_resume(self):
+        if not self.pausing or config.single_player:
+            self.resume()
+            return
+        self.net.send_msg({'type': 'req_resume'})
+
+    def do_pause(self):
+        print 'do_pause called'
+        self.paused = self.pausing = 1
+        if hasattr(self, 'updater_delayed'):
+            self.updater_delayed.cancel()
+        pause2 = pause.get_pause_scene()
+        cocos.director.director.push(pause2)
+
+    def do_resume(self):
+        cocos.director.director.pop()
+        
+    def on_enter(self):
+        super(GameLayer, self).on_enter()
+        if self.pausing:
+            self.paused = self.pausing = 0
+            self.updater(self.update_state, config.tick)
+
     def should_skip(self):
         seq_diff = self.seq - self.server_seq
         if seq_diff >= config.hard_skip_thres:
@@ -75,7 +112,6 @@ class GameLayer(cocos.layer.Layer):
             if self.hard_skip_count > config.state_history_size:
                 print 'No updates from server, shutting down'
                 self.shutdown()
-            # self.skip = 0
             return 1
         elif seq_diff >= config.soft_skip_thres:
             self.hard_skip_count = 0
@@ -153,13 +189,16 @@ class GameLayer(cocos.layer.Layer):
             print 'recomputed', len(to_recompute), 'states'
 
 
-    def on_key_press(self, key, modifiers):
+    def on_key_press(self, k, modifiers):
+        if k == key.PAUSE:
+            if self.pausing: self.req_resume()
+            else: self.req_pause()
         if hasattr(self, 'input_manager'):
-            self.input_manager.update_key(key, 1)
+            self.input_manager.update_key(k, 1)
 
-    def on_key_release(self, key, modifiers):
+    def on_key_release(self, k, modifiers):
         if hasattr(self, 'input_manager'):
-            self.input_manager.update_key(key, 0)
+            self.input_manager.update_key(k, 0)
 
     def on_close(self):
         print 'Close button pressed, shutting down'

@@ -53,6 +53,7 @@ class Session:
         self.entity_manager = EntityManager(1)
         self.physics_manager = PhysicsManager(self.entity_manager.entities)
         self.seq = 0
+        self.paused = 0
         for i, c in enumerate(clients):
             c.num = i + 1
             c.input_history = History()
@@ -68,6 +69,13 @@ class Session:
             self.input(client, msg)
         elif msg_type == 'leaving':
             self.broadcast_msg({'type': 'leave'})
+        elif msg_type == 'req_pause' and not self.paused:
+            self.paused = 1
+            print 'sending pause message'
+            self.broadcast_msg({'type': 'pause'})
+        elif msg_type == 'req_resume' and self.paused:
+            self.paused = 0
+            self.broadcast_msg({'type': 'resume'})
 
     def input(self, client, msg):
         self.check_input(client, msg)
@@ -128,7 +136,7 @@ class HockeyServerProtocol(WebSocketServerProtocol):
             msg_type = msg.get('type', '')
             if msg_type == 'hello':
                 self.factory.sm.add(self)
-            elif msg_type == 'input':
+            else:
                 self.factory.sm.get(self).msg(self, msg)
 
         except:
