@@ -43,20 +43,6 @@ class WallCorner(entityclass.SpritelessEntity):
         self.radius = 0
         self.collidable = wall.collidable
 
-class Goal(Wall):
-
-    #def __init__(self, start, end, ident, reset_callback):
-    def __init__(self, start, end, ident):
-        super(Goal, self).__init__(start, end, ident)
-        #self.reset_callback = reset_callback
-
-    def update(self, dt, entities):
-        for e in entities:
-            if (e.ident == 'puck'):
-                if physics.PhysicsManager.isColliding(self, e):
-                    print 'Puck collides with goal'
-                    #callback function reset
-
 class PlayerControlledBall(Ball):
 
     #Constructor for player controlled ball.

@@ -60,8 +60,8 @@ class EntityManager():
         wall_player2_goal = entity.Wall(eu.Point2(0, config.height-config.goal_depth-config.goal_wall_distance), eu.Point2(config.width, config.height-config.goal_depth-config.goal_wall_distance), "wall_player2_goal")
 
         #goal lines
-        goal_player1 = entity.Goal(eu.Point2(config.width/2-config.goal_width/2, config.goal_depth), eu.Point2(config.width/2+config.goal_width/2, config.goal_depth), "player1_goal")
-        goal_player2 = entity.Goal(eu.Point2(config.width/2-config.goal_width/2, config.height-config.goal_depth), eu.Point2(config.width/2+config.goal_width/2, config.height-config.goal_depth), "player2_goal")
+        goal_player1 = entity.Wall(eu.Point2(config.width/2-config.goal_width/2, config.goal_depth), eu.Point2(config.width/2+config.goal_width/2, config.goal_depth), "player1_goal")
+        goal_player2 = entity.Wall(eu.Point2(config.width/2-config.goal_width/2, config.height-config.goal_depth), eu.Point2(config.width/2+config.goal_width/2, config.height-config.goal_depth), "player2_goal")
 
         ball1_1.dont_collide = [wall_player1_goal]
         ball1_2.dont_collide = [wall_player1_goal]

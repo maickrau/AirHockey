@@ -1,9 +1,12 @@
 import cocos
 from util import *
+import config
 
 class BgLayer(cocos.layer.Layer):
 
     def __init__(self):
         super(BgLayer, self).__init__()
-        bg = cocos.sprite.Sprite("res/field.png", position=(200,400))
+        height = config.height / 2
+        width = config.width / 2
+        bg = cocos.sprite.Sprite("res/field.png", position=(width,height))
         self.add(bg)
