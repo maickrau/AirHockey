@@ -9,6 +9,20 @@ class EntityManager():
         self.entities = self._generate_entities(server)
         self.state_history = History()
 
+    #return player number or 0 if no goal
+    def isGoal(self):
+	puck = self.getByIdent('puck')
+	if (puck.pos.y < config.goal_depth):
+		return 2
+	elif (puck.pos.y > (config.height - config.goal_depth)):
+		return 1
+	return 0
+
+    def getByIdent(self, ident):
+	for e in self.entities:
+		if e.ident == ident:
+			return e
+
     def reset(self):
         #TODO implement
         print "Resetting"
