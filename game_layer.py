@@ -109,11 +109,13 @@ class GameLayer(cocos.layer.Layer):
         # sending to server and physics computation
         local_input = deepcopy(self.input_manager.serial)
         if config.single_player:
-
-            ai_input = AI.AI_commands(self.entity_manager.entities)
+#            ai_input = AI.AI_commands(self.entity_manager.entities)
+            ai_input = AI.AI_commands(self.entity_manager)
+            ai_input['seq'] = self.seq
             local_input.update(ai_input)
         last_hist_item = self.entity_manager.state_history.get_last()
-        if last_hist_item is not None:
+#        if last_hist_item is not None:
+        if not config.single_player and last_hist_item is not None:
             input_state = self.input_manager.combine(last_hist_item['input'], local_input)
         else:
             input_state = local_input

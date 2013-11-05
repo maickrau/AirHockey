@@ -8,8 +8,10 @@ def norm(A):
 	else:
 		return 0
 def AI_commands(state):
-	ball1_1, ball1_2, ball2_1, ball2_2, puck, walls_left, walls_right, stopPower, wall_player1_goal, wall_player2_goal, goal_player1, goal_player2 = state
-	
+#	ball1_1, ball1_2, ball2_1, ball2_2, puck, walls_left, walls_right, stopPower, wall_player1_goal, wall_player2_goal, goal_player1, goal_player2 = state
+	ball2_1 = state.getByIdent('letters2')
+	ball2_2 = state.getByIdent('arrows2')
+	puck = state.getByIdent('puck')
 	#
 	#
 	# Somehow get following variables
@@ -41,7 +43,7 @@ def AI_commands(state):
 	ball1x=pos_bigballx-pos_ball1x
 	ball1y=pos_bigbally-pos_ball1y
 	ball2x=pos_bigballx-pos_ball2x
-	ball2y=pos_bigballx-pos_ball2y
-	serial= { 'letters' + num: {'x': ball1x, 'y': ball1y}, 'arrows' + num: {'x': ball2x, 'y': ball2y}
-	}
+	ball2y=pos_bigbally-pos_ball2y
+	serial= { 'letters' + num: {'x': int(ball1x), 'y': int(ball1y)}, 'arrows' + num: {'x': ball2x, 'y': ball2y}, 'seq':'0', 'type':'input'}
+#	print serial
 	return serial
