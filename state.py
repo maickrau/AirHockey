@@ -30,11 +30,11 @@ class EntityManager():
         walls_right = entity.WallStrip("walls_right")
         walls_right.points = wall_points
 
-        ball1_1 = entity.PlayerControlledBall(eu.Point2(100, 100), 'letters1')
-        ball1_2 = entity.PlayerControlledBall(eu.Point2(300, 100), 'arrows1')
-        ball2_1 = entity.PlayerControlledBall(eu.Point2(100, 700), 'letters2')
-        ball2_2 = entity.PlayerControlledBall(eu.Point2(300, 700), 'arrows2')
-        puck = entity.Ball(eu.Point2(200, 400), 'puck')
+        ball1_1 = entity.PlayerControlledBall(eu.Point2(config.width/4, 100), 'letters1')
+        ball1_2 = entity.PlayerControlledBall(eu.Point2(3*config.width/4, 100), 'arrows1')
+        ball2_1 = entity.PlayerControlledBall(eu.Point2(config.width/4, 700), 'letters2')
+        ball2_2 = entity.PlayerControlledBall(eu.Point2(3*config.width/4, 700), 'arrows2')
+        puck = entity.Ball(eu.Point2(config.width/2, 400), 'puck')
         stopPower = entity.StopPowerUp(eu.Point2(200, 200), 'stopPower')
 
         #walls close to goal

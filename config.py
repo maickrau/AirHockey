@@ -25,7 +25,7 @@ elasticity = 1.0 #1 is perfectly elastic collisions, 0 is perfectly inelastic
 mass = 1.0
 
 height = 800
-width = 400
+width = 600
 
 #players "own walls" distance from goal
 goal_wall_distance = 100
