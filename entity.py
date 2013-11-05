@@ -86,12 +86,17 @@ class StopPowerUp(PowerUp):
         elif self.used:
             self.timer.addTime(dt)
             if self.timer.isDone():
-                self.remove = True
-                self.ball.maxVel = config.maxVel
+                #self.remove = True
+                self.ball.maxVel = config.max_vel
+                self.ball.accValue = config.acc
             else:
+                print("Timer is not done!")
                 self.ball.maxVel = 0
+                self.ball.accValue = 0
+                self.ball.vel = eu.Vector2(0, 0)
+                self.ball.acc = eu.Vector2(0, 0)
 
     def _trigger(self):
-        self.timer = util.Timer(5000)
+        self.timer = util.Timer(5)
         self.visible = False
         self.used = True

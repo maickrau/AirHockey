@@ -26,14 +26,14 @@ def mstime(start=0.0):
 
 class Timer():
 
-    def __init__(self, timems):
-        self.totalms = 0
-        self.milliseconds = timems
+    def __init__(self, timeseconds):
+        self.totalseconds = 0
+        self.seconds = timeseconds
 
     def addTime(self, dt):
-        self.totalms += dt
+        self.totalseconds += dt
 
     def isDone(self):
-        if self.milliseconds <= self.totalms:
+        if self.seconds <= self.totalseconds:
             return True
         return False
