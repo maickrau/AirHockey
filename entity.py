@@ -43,6 +43,20 @@ class WallCorner(entityclass.SpritelessEntity):
         self.radius = 0
         self.collidable = wall.collidable
 
+class Goal(Wall):
+
+    #def __init__(self, start, end, ident, reset_callback):
+    def __init__(self, start, end, ident):
+        super(Goal, self).__init__(start, end, ident)
+        #self.reset_callback = reset_callback
+
+    def update(self, dt, entities):
+        for e in entities:
+            if (e.ident == 'puck'):
+                if physics.PhysicsManager.isColliding(self, e):
+                    print 'Puck collides with goal'
+                    #callback function reset
+
 class PlayerControlledBall(Ball):
 
     #Constructor for player controlled ball.
@@ -76,22 +90,23 @@ class StopPowerUp(PowerUp):
             return
         if not self.used:
             for e in entities:
-                #!!! Temporary!!#
-                #if False:
                 if isinstance(e, PlayerControlledBall):
                     if physics.PhysicsManager.isColliding(self, e):
-                        print("This StopPowerUp is colliding with a PlayerControlledBall")
                         self.ball = e
                         self._trigger()
         elif self.used:
             self.timer.addTime(dt)
             if self.timer.isDone():
-                self.remove = True
-                self.ball.maxVel = config.maxVel
+                #self.remove = True
+                self.ball.maxVel = config.max_vel
+                self.ball.accValue = config.acc
             else:
                 self.ball.maxVel = 0
+                self.ball.accValue = 0
+                self.ball.vel = eu.Vector2(0, 0)
+                self.ball.acc = eu.Vector2(0, 0)
 
     def _trigger(self):
-        self.timer = util.Timer(5000)
+        self.timer = util.Timer(5)
         self.visible = False
         self.used = True
