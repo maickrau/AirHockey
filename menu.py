@@ -78,11 +78,14 @@ class MainMenu(Menu):
         self.create_menu( [item1,item3,item4,item5,item6, item7, item8, item9])
 
 
+
+
     def start_game(self, single):
         config.single_player = single
         config.server = False
+        bg = bg_layer.BgLayer()
         game = game_layer.GameLayer()
-        scene = Scene(game)
+        scene = Scene(bg, game)
         director.run(scene)
 		
     def on_quit( self ):
@@ -127,39 +130,6 @@ class Credits(Menu):
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8])
         self.create_menu( [item1,item3,item4,item5,item6, item7, item8, item9])
-
-
-    def start_game(self, single):
-        config.single_player = single
-        config.server = False
-        bg = bg_layer.BgLayer()
-        game = game_layer.GameLayer()
-        scene = Scene(bg, game)
-        director.run(scene)
-		
-    def on_quit( self ):
-        pyglet.app.exit()
-
-    def on_multiple_callback(self, idx ):
-        print 'multiple item callback', idx
-
-    def on_toggle_callback(self, b ):
-        print 'toggle item callback', b
-
-    def on_callback(self ):
-        print 'item callback'
-
-    def on_entry_callback (self, value):
-        print 'entry item callback', value
-
-    def on_image_callback (self):
-        print 'image item callback'
-
-    def on_color_callback(self, value):
-        print 'color item callback:', value
-		
-    def play_our_names(self):
-		print 'Our names gif image running'
 
 def main():
 
