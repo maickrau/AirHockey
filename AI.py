@@ -1,6 +1,14 @@
 #AI_bot
+import config
+import euclid
 
+def norm(A):
+	if not A==0:
+		return A/abs(A)
+	else:
+		return 0
 def AI_commands(state):
+	ball1_1, ball1_2, ball2_1, ball2_2, puck, walls_left, walls_right, stopPower, wall_player1_goal, wall_player2_goal, goal_player1, goal_player2 = state
 	
 	#
 	#
@@ -8,12 +16,15 @@ def AI_commands(state):
 	#
 	#
 	#
-	pos_ball1x=100
-	pos_ball1y=100
-	pos_ball2x=100 
-	pos_ball2y=100
-	pos_bigballx=100
-	pos_bigbally=100
+	pos_ball1x=ball2_1.pos.x
+	pos_ball1y=ball2_1.pos.y
+	pos_ball2x=ball2_2.pos.x
+	pos_ball2y=ball2_2.pos.y
+	pos_bigballx=puck.pos.x
+	pos_bigbally=puck.pos.y
+	num="2"
+	
+	
 	
 	pos_goalx=config.width/2
 	pos_goaly=0
@@ -27,34 +38,10 @@ def AI_commands(state):
 	#2 possibility: by keys or straightly by updating state. Last one might cause problems, so:
 	
 	#ball1
-	if(pos_ball1x>pos_bigballx+norm(pos_bigballx-pos_goalx)):
-		ball1x=1
-	elif(pos_ball1x==pos_bigballx+norm(pos_bigballx-pos_goalx)):
-		ball1x=0
-	else:
-		ball1x=-1
-	
-	if(pos_ball1y>pos_bigbally+norm(pos_bigbally-pos_goaly)):
-		ball1y=1
-	elif(pos_ball1y==pos_bigbally+norm(pos_bigbally-pos_goaly)):
-		ball1y=0
-	else:
-		ball1y=-1
-	
-	
-	#ball2
-	if(pos_ball2x>pos_bigballx+norm(pos_bigballx-pos_goalx)):
-		ball2x=1
-	elif(pos_ball2x==pos_bigballx+norm(pos_bigballx-pos_goalx)):
-		ball2x=0
-	else:
-		ball2x=-1
-	
-	if(pos_ball2y>pos_bigbally+norm(pos_bigbally-pos_goaly)):
-		ball2y=1
-	elif(pos_ball2y==pos_bigbally+norm(pos_bigbally-pos_goaly)):
-		ball2y=0
-	else:
-		ball2y=-1
-		
-	
+	ball1x=pos_bigballx-pos_ball1x
+	ball1y=pos_bigbally-pos_ball1y
+	ball2x=pos_bigballx-pos_ball2x
+	ball2y=pos_bigballx-pos_ball2y
+	serial= { 'letters' + num: {'x': ball1x, 'y': ball1y}, 'arrows' + num: {'x': ball2x, 'y': ball2y}
+	}
+	return serial
