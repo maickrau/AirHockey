@@ -18,6 +18,7 @@ from cocos.layer import *
 
 import config
 import game_layer
+import bg_layer
 
 class MainMenu(Menu):
 
@@ -77,8 +78,9 @@ class MainMenu(Menu):
     def start_game(self, single):
         config.single_player = single
         config.server = False
+        bg = bg_layer.BgLayer()
         game = game_layer.GameLayer()
-        scene = Scene(game)
+        scene = Scene(bg, game)
         director.run(scene)
 		
     def on_quit( self ):
