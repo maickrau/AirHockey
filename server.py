@@ -48,21 +48,30 @@ class SessionManager:
             del self.assoc[client.req.peerstr]
 
 class Session:
-    def __init__(self, clients):
-        self.clients = clients
+    def __init__(self, clients=None):
+        if clients:
+            self.clients = clients
+            self.in_pause = 0
         self.entity_manager = EntityManager(1)
         self.physics_manager = PhysicsManager(self.entity_manager.entities)
         self.seq = 0
         for i, c in enumerate(clients):
             c.num = i + 1
             c.input_history = History()
-            c.last_seq = 0
+            c.last_seq = c.score = 0
 
     def start(self):
+        self.in_pause = 0
+        print 'sending pre_init'
         for c in self.clients:
             c.send_msg({'type': 'pre_init', 'num': str(c.num)})
 
+    def reset(self):
+        self.__init__()
+
     def msg(self, client, msg):
+        if self.in_pause:
+            return
         msg_type = msg.get('type', '')
         if msg_type == 'input':
             self.input(client, msg)
@@ -105,6 +114,16 @@ class Session:
         self.physics_manager.update(config.tick, common_inp)
         item = StateItem(self.entity_manager.entities, common_inp).full_state()
         self.seq = common_inp['seq']
+        goal = self.entity_manager.is_goal()
+        if goal:
+            c = self.clients
+            c[goal - 1].score += 1
+            score = {'type': 'score', 'score': {'1': c[0].score, '2': c[1].score}}
+            print 'Goal! Score:', score
+            self.broadcast_msg(score)
+            self.in_pause = 1
+            reactor.callLater(5, self.start)
+            return
         #self.broadcast_msg(item)
         for c in self.clients:
             item['last_seq'] = c.last_seq
@@ -128,7 +147,7 @@ class HockeyServerProtocol(WebSocketServerProtocol):
             msg_type = msg.get('type', '')
             if msg_type == 'hello':
                 self.factory.sm.add(self)
-            elif msg_type == 'input':
+            else:
                 self.factory.sm.get(self).msg(self, msg)
 
         except:

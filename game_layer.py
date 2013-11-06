@@ -20,7 +20,7 @@ class GameLayer(cocos.layer.Layer):
     #Lets the layer receive events from director.window
     is_event_handler = True
 
-    def __init__(self, start_game_callback, max_goals=1):
+    def __init__(self, start_game_callback, is_restart=0, max_goals=3):
         super(GameLayer, self).__init__()
         self.start_game = start_game_callback
         self.entity_manager = EntityManager(0)
@@ -43,19 +43,23 @@ class GameLayer(cocos.layer.Layer):
         self.send_times = []
 
         if not config.single_player:
-            self.net = client.Client(self)
+            if not is_restart:
+                self.net = client.Client(self)
         else:
             self.pre_init({'num': '1'})
 
         #Schedule the render method
         self.schedule(self.entity_manager.render)
-        # start Twisted's reactor in another thread
-        Thread(target=reactor.run, kwargs={'installSignalHandlers': 0}).start()
+        if not is_restart:
+            # start Twisted's reactor in another thread
+            Thread(target=reactor.run, kwargs={'installSignalHandlers': 0}).start()
 
     def score(self, msg):
         scores = msg['score']
         self.goals1 = scores['1']
         self.goals2 = scores['2']
+        self.stop_updater()
+        self.seq = self.input_manager.serial['seq'] = 0
         self.entity_manager.reset()
         self._update_score_signs()
 
@@ -225,7 +229,7 @@ class GameLayer(cocos.layer.Layer):
 
 
     def on_key_press(self, key, modifiers):
-        if key == 114:
+        if key == 114 and config.single_player:
             self.restart()
         if hasattr(self, 'input_manager'):
             self.input_manager.update_key(key, 1)
@@ -238,9 +242,12 @@ class GameLayer(cocos.layer.Layer):
         print 'Close button pressed, shutting down'
         self.shutdown()
 
-    def shutdown(self):
+    def stop_updater(self):
         if hasattr(self, 'updater_delayed') and self.updater_delayed.active():
             self.updater_delayed.cancel()
+
+    def shutdown(self):
+        self.stop_updater()
         if not config.single_player:
 			self.net.send_msg({'type': 'leaving'})
         if not config.single_player and self.seq:
@@ -254,4 +261,6 @@ class GameLayer(cocos.layer.Layer):
         cocos.director.director.pop()
 
     def restart(self):
-        self.start_game(1)
+        self.stop_updater()
+        self.unschedule(self.entity_manager.render)
+        self.start_game(config.single_player, is_restart=1)

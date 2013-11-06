@@ -93,11 +93,11 @@ class MainMenu(Menu):
 
 
 
-    def start_game(self, single):
+    def start_game(self, single, is_restart=0):
         config.single_player = single
         config.server = False
         bg = bg_layer.BgLayer()
-        game = game_layer.GameLayer(self.start_game)
+        game = game_layer.GameLayer(self.start_game, is_restart=is_restart)
         scene = Scene(bg, game)
         director.run(scene)
         

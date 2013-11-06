@@ -10,7 +10,7 @@ class EntityManager():
         self.state_history = History()
 
     #return player number or 0 if no goal
-    def isGoal(self):
+    def is_goal(self):
 	puck = self.getByIdent('puck')
 	if (puck.pos.y < config.goal_depth):
 		return 2
@@ -39,6 +39,8 @@ class EntityManager():
         ball2_2 = self.getByIdent('arrows2')
         ball2_2.pos = eu.Point2(3*config.width/4, 700)
         ball2_2.vel = eu.Vector2(0, 0)
+
+        self.state_history = History()
         print "Resetting"
 
     def _generate_entities(self, server=0):
