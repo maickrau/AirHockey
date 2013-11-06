@@ -73,7 +73,7 @@ class GameLayer(cocos.layer.Layer):
         return False
 
     def _check_goals(self):
-        goal = self.entity_manager.isGoal()
+        goal = self.entity_manager.is_goal()
         if goal == 0:
             return
         if goal == 1:
@@ -257,7 +257,7 @@ class GameLayer(cocos.layer.Layer):
             print 'Total soft skips: %d - %.1f%%' % (self.total_soft_skip_count, soft_percent)
             hard_percent = self.total_hard_skip_count * 100.0 / total_states
             print 'Total hard skips: %d - %.1f%%' % (self.total_hard_skip_count, hard_percent)
-        reactor.stop()
+#        reactor.stop()
         cocos.director.director.pop()
 
     def restart(self):

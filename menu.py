@@ -22,6 +22,7 @@ import config
 import game_layer
 import bg_layer
 
+from twisted.internet import reactor
 
 #from cocos.menu import Menu, MenuItem, RIGHT
 from cocos.director import director
@@ -33,6 +34,7 @@ class MainMenu(Menu):
 
     def __init__( self ):
         super( MainMenu, self ).__init__("AirHockey  v1.0")
+        self.restart_game = False
 
 #        self.menu_valign = BOTTOM
         self.menu_halign = LEFT
@@ -93,15 +95,17 @@ class MainMenu(Menu):
 
 
 
-    def start_game(self, single, is_restart=0):
+    def start_game(self, single):
         config.single_player = single
         config.server = False
         bg = bg_layer.BgLayer()
-        game = game_layer.GameLayer(self.start_game, is_restart=is_restart)
+        game = game_layer.GameLayer(self.start_game, is_restart=self.restart_game)
+        self.restart_game = True
         scene = Scene(bg, game)
-        director.run(scene)
+        director.push(scene)
         
     def on_quit( self ):
+        reactor.stop()
         pyglet.app.exit()
     def change_IP(self, value):
     
