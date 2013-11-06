@@ -52,13 +52,15 @@ class Session:
         if clients:
             self.clients = clients
             self.in_pause = 0
+            for c in clients:
+                c.score = 0
         self.entity_manager = EntityManager(1)
         self.physics_manager = PhysicsManager(self.entity_manager.entities)
         self.seq = 0
-        for i, c in enumerate(clients):
+        for i, c in enumerate(self.clients):
             c.num = i + 1
             c.input_history = History()
-            c.last_seq = c.score = 0
+            c.last_seq = 0
 
     def start(self):
         self.in_pause = 0
@@ -122,6 +124,7 @@ class Session:
             print 'Goal! Score:', score
             self.broadcast_msg(score)
             self.in_pause = 1
+            self.reset()
             reactor.callLater(5, self.start)
             return
         #self.broadcast_msg(item)
