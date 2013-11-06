@@ -100,6 +100,8 @@ class GameLayer(cocos.layer.Layer):
         #Add entities to layer
         for e in self.entity_manager.entities:
             self.add(e)
+            if e.ident == 'arrows'+msg['num'] or e.ident == 'letters'+msg['num']:
+                e.color = (255, 0, 0)
 
         # Set a timer-based updater for internal state
         self.updater(self.update_state, config.tick)
