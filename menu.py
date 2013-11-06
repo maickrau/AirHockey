@@ -28,6 +28,8 @@ from twisted.internet import reactor
 from cocos.director import director
 #from cocos.layer import AnimationLayer
 
+from threading import Thread
+
 class MainMenu(Menu):
 
 #    arial=font.load('Arial',26,bold=True, italic=False)
@@ -35,6 +37,7 @@ class MainMenu(Menu):
     def __init__( self ):
         super( MainMenu, self ).__init__("AirHockey  v1.0")
         self.restart_game = False
+        Thread(target=reactor.run, kwargs={'installSignalHandlers': 0}).start()
 
 #        self.menu_valign = BOTTOM
         self.menu_halign = LEFT

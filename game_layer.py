@@ -50,9 +50,8 @@ class GameLayer(cocos.layer.Layer):
 
         #Schedule the render method
         self.schedule(self.entity_manager.render)
-        if not is_restart:
+#        if not is_restart:
             # start Twisted's reactor in another thread
-            Thread(target=reactor.run, kwargs={'installSignalHandlers': 0}).start()
 
     def score(self, msg):
         scores = msg['score']
