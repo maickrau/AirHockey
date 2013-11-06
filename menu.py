@@ -102,7 +102,7 @@ class MainMenu(Menu):
         config.single_player = single
         config.server = False
         bg = bg_layer.BgLayer()
-        game = game_layer.GameLayer(self.start_game, is_restart=self.restart_game)
+        game = game_layer.GameLayer(self.start_game)
         self.restart_game = True
         scene = Scene(bg, game)
         director.push(scene)

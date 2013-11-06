@@ -25,7 +25,7 @@ class GameLayer(cocos.layer.Layer):
         self.start_game = start_game_callback
         self.entity_manager = EntityManager(0)
         self.entity_manager2 = EntityManager(0)
-        self.skip = 0
+        self.shutting_down = 0
         self.seq = self.server_seq = 0
         self.soft_skip_count = self.hard_skip_count = 0
         self.total_soft_skip_count = self.total_hard_skip_count = 0
@@ -241,13 +241,16 @@ class GameLayer(cocos.layer.Layer):
 
     def on_close(self):
         print 'Close button pressed, shutting down'
-        self.shutdown()
+        self.shutdown(do_quit=1)
 
     def stop_updater(self):
         if hasattr(self, 'updater_delayed') and self.updater_delayed.active():
             self.updater_delayed.cancel()
 
-    def shutdown(self):
+    def shutdown(self, do_quit=0):
+        if self.shutting_down:
+            return
+        self.shutting_down = 1
         self.stop_updater()
         if not config.single_player:
 			self.net.send_msg({'type': 'leaving'})
@@ -258,7 +261,8 @@ class GameLayer(cocos.layer.Layer):
             print 'Total soft skips: %d - %.1f%%' % (self.total_soft_skip_count, soft_percent)
             hard_percent = self.total_hard_skip_count * 100.0 / total_states
             print 'Total hard skips: %d - %.1f%%' % (self.total_hard_skip_count, hard_percent)
-#        reactor.stop()
+        if do_quit:
+            reactor.stop()
         cocos.director.director.pop()
 
     def restart(self):
