@@ -1,6 +1,6 @@
 === The game ===
 
-The purpose of the game is to hit the puck into the other player's goal. You control two hockey paddles, and so does your opponent.
+The purpose of the game is to hit the puck into the other player's goal. You control the two red hockey paddles, and your opponent controls the two yellow paddles.
 
 === Controls ===
 
