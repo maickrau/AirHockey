@@ -194,9 +194,9 @@ class Settings(Menu):
         self.menu_halign = LEFT
 
         resolutions = ['ON', 'OFF']
-        item1= MultipleMenuItem('Powerup: ',
-                        self.on_multiple_callback,
-                        resolutions)
+#        item1= MultipleMenuItem('Powerup: ',
+#                        self.on_multiple_callback,
+#                        resolutions)
 
 		
         item2 = EntryMenuItem('IP:Port :\n', self.change_IP, 'localhost:54321',
@@ -207,7 +207,8 @@ class Settings(Menu):
         #        item8 = ImageMenuItem('Credits', self.on_image_callback)
         item4 = MenuItem(' ', self.on_callback)
 
-        self.create_menu( [item1, item2, item4 ,item3])
+#        self.create_menu( [item1, item2, item4 ,item3])
+        self.create_menu( [item2, item4 ,item3])
     def on_callback(self):
         cocos.director.director.pop()
     def change_IP(self, value):    
