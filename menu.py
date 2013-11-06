@@ -171,6 +171,7 @@ class Tutorial(Menu):
         super( Tutorial, self ).__init__("Tutorial:")
 
         item1 = ImageMenuItem('Tutorial_image.jpg', self.on_image_callback)
+        item1.scale=5
         bg = cocos.sprite.Sprite("res/field.png", position=(config.width,config.height))
         item2 = MenuItem('', self.on_callback)
 
