@@ -14,4 +14,4 @@ The single player mode plays against a simple AI.
 
 To join a multiplayer server, go to the settings tab and change the IP and port to the server's IP and port. Then you can use the multiplayer button on the main menu. The game will start when there are two players on the server.
 
-To host a multiplayer server, simply start the server executable.
+To host a multiplayer server, simply start the server executable. The server will start on port 54321.
