@@ -168,7 +168,7 @@ class Tutorial(Menu):
 #    arial=font.load('Arial',26,bold=True, italic=False)
 
     def __init__( self ):
-        super( Tutorial, self ).__init__("Tutorial:")
+        super( Tutorial, self ).__init__("Tutorial")
 
         item1 = ImageMenuItem('Tutorial_image.jpg', self.on_image_callback)
         item1.scale=5
@@ -178,7 +178,8 @@ class Tutorial(Menu):
         item3 = MenuItem('Back', self.on_callback)        
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8])
-        self.create_menu( [item1, item2, item3])
+        self.create_menu( [item1, item3], layout_strategy=fixedPositionMenuLayout(
+                            [(300, 500), (300, 150)]))
     def on_image_callback(self):
         cocos.director.director.pop()
     def on_callback(self):
