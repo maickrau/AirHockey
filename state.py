@@ -24,7 +24,21 @@ class EntityManager():
 			return e
 
     def reset(self):
-        #TODO implement
+        puck = self.getByIdent('puck')
+        puck.pos = eu.Point2(config.width/2, config.height/2)
+        puck.vel = eu.Vector2(0, 0)
+        ball1_1 = self.getByIdent('letters1')
+        ball1_1.pos = eu.Point2(config.width/4, 100)
+        ball1_1.vel = eu.Vector2(0, 0)
+        ball1_2 = self.getByIdent('arrows1')
+        ball1_2.pos = eu.Point2(3*config.width/4, 100)
+        ball1_2.vel = eu.Vector2(0, 0)
+        ball2_1 = self.getByIdent('letters2')
+        ball2_1.pos = eu.Point2(config.width/4, 700)
+        ball2_1.vel = eu.Vector2(0, 0)
+        ball2_2 = self.getByIdent('arrows2')
+        ball2_2.pos = eu.Point2(3*config.width/4, 700)
+        ball2_2.vel = eu.Vector2(0, 0)
         print "Resetting"
 
     def _generate_entities(self, server=0):
@@ -52,7 +66,7 @@ class EntityManager():
         ball1_2 = entity.PlayerControlledBall(eu.Point2(3*config.width/4, 100), 'arrows1')
         ball2_1 = entity.PlayerControlledBall(eu.Point2(config.width/4, 700), 'letters2')
         ball2_2 = entity.PlayerControlledBall(eu.Point2(3*config.width/4, 700), 'arrows2')
-        puck = entity.Ball(eu.Point2(config.width/2, 400), 'puck')
+        puck = entity.Ball(eu.Point2(config.width/2, config.height/2), 'puck')
         stopPower = entity.StopPowerUp(eu.Point2(200, 200), 'stopPower')
 
         #walls close to goal

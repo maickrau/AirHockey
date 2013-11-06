@@ -4,6 +4,7 @@ import input
 import config
 import client
 from state import EntityManager, StateItem, History
+import util
 from util import mstime
 import AI
 from twisted.internet import reactor
@@ -19,7 +20,7 @@ class GameLayer(cocos.layer.Layer):
     #Lets the layer receive events from director.window
     is_event_handler = True
 
-    def __init__(self, start_game_callback):
+    def __init__(self, start_game_callback, max_goals=1):
         super(GameLayer, self).__init__()
         self.start_game = start_game_callback
         self.entity_manager = EntityManager(0)
@@ -28,6 +29,17 @@ class GameLayer(cocos.layer.Layer):
         self.seq = self.server_seq = 0
         self.soft_skip_count = self.hard_skip_count = 0
         self.total_soft_skip_count = self.total_hard_skip_count = 0
+        self.max_goals = max_goals
+        self.game_over = False
+        self.goals1 = 0
+        self.goals2 = 0
+        self.end_label = cocos.text.Label("You won! You lost!", font_size=64, anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
+        self.end_label.element.text = ""
+        self.end_label.position = config.width/2, config.height/2
+        self.goalsign = cocos.text.Label("0123456789-", font_size=32, anchor_x='center',anchor_y='top', color=(0, 0, 0, 255))
+        self.goalsign.position = config.width/2, config.height
+        self._update_score_signs()
+        self.add(self.goalsign)
         self.send_times = []
 
         if not config.single_player:
@@ -39,6 +51,43 @@ class GameLayer(cocos.layer.Layer):
         self.schedule(self.entity_manager.render)
         # start Twisted's reactor in another thread
         Thread(target=reactor.run, kwargs={'installSignalHandlers': 0}).start()
+
+    def score(self, msg):
+        scores = msg['score']
+        self.goals1 = scores['1']
+        self.goals2 = scores['2']
+        self.entity_manager.reset()
+        self._update_score_signs()
+
+    def _did_i_win(self):
+        if self.input_manager.num == '1':
+            if self.goals1 >= self.max_goals:
+                return True
+        else:
+            if self.goals2 >= self.max_goals:
+                return True
+        return False
+
+    def _check_goals(self):
+        goal = self.entity_manager.isGoal()
+        if goal == 0:
+            return
+        if goal == 1:
+            self.goals1 += 1
+        elif goal == 2:
+            self.goals2 += 1
+        self.entity_manager.reset()
+        self._update_score_signs()
+
+    def _update_score_signs(self):
+        self.goalsign.element.text = str(self.goals1) + '-' + str(self.goals2)
+
+    def _check_quit_condition(self):
+        if self.goals1 >= self.max_goals:
+            return True
+        if self.goals2 >= self.max_goals:
+            return True
+        return False
 
     def pre_init(self, msg):
         self.input_manager = input.InputManager(msg['num'])
@@ -94,6 +143,11 @@ class GameLayer(cocos.layer.Layer):
         """Sends input over network and calls physics_manager's update
         Called within reactor's thread
         """
+        if self.game_over:
+            self.end_timer.addTime(dt)
+            if self.end_timer.isDone():
+                self.shutdown()
+            return
         #print json.dumps(StateItem(self.entity_manager.entities, {'seq': 0}).state())
         start = mstime()
         if not config.single_player:
@@ -126,6 +180,16 @@ class GameLayer(cocos.layer.Layer):
         self.entity_manager.update(dt)
         self.physics_manager.update(dt, input_state)
         self.entity_manager.add_to_history(input_state)
+        if config.single_player or config.server:
+            self._check_goals()
+        if self._check_quit_condition():
+            self.end_timer = util.Timer(3)
+            if self._did_i_win():
+                self.end_label.element.text = "You won!"
+            else:
+                self.end_label.element.text = "You lost!"
+            self.add(self.end_label)
+            self.game_over = True
         #print 'seq:', self.input_manager.serial['seq'], 'spent time:', mstime(start)
 
     def update_from_server(self, state):

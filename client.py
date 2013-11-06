@@ -24,6 +24,8 @@ class HockeyClientProtocol(WebSocketClientProtocol):
             print 'Waiting for party...'
         elif msg_type == 'pre_init':
             self.factory.game_layer.pre_init(msg)
+        elif msg_type == 'score':
+            self.factory.game_layer.score(msg)
         elif msg_type == 'leave':
             print 'Another player left the game, we are leaving too'
             self.factory.game_layer.shutdown()
