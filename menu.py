@@ -71,7 +71,7 @@ class MainMenu(Menu):
 
         item3 = MenuItem('Multiplayer Game', self.start_game, 0)
         item4 = MenuItem('Single Player', self.start_game, 1)
-        item5 = MenuItem('High Score', self.on_callback)
+#        item5 = MenuItem('High Score', self.on_callback)
         
 #        resolutions = ['ON', 'OFF']
 #        item6= MultipleMenuItem('Powerup: ',
@@ -93,7 +93,7 @@ class MainMenu(Menu):
         
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8])
-        self.create_menu( [item3,item4,item5,item2, item7, item8, item10, item9])
+        self.create_menu( [item3,item4,item2, item7, item8, item10, item9])
 
 
 
