@@ -172,14 +172,17 @@ class Tutorial(Menu):
 
         item1 = ImageMenuItem('Tutorial_image.jpg', self.on_image_callback)
         bg = cocos.sprite.Sprite("res/field.png", position=(config.width,config.height))
+        item2 = MenuItem('', self.on_callback)
 
-        
+        item3 = MenuItem('Back', self.on_callback)        
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8])
-        self.create_menu( [item1])
+        self.create_menu( [item1, item2, item3])
     def on_image_callback(self):
         cocos.director.director.pop()
-
+    def on_callback(self):
+        cocos.director.director.pop()
+		
 class Settings(Menu):
 
 #    arial=font.load('Arial',26,bold=True, italic=False)
