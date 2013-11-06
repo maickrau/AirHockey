@@ -34,7 +34,7 @@ class HockeyClientProtocol(WebSocketClientProtocol):
         # reactor.callLater(1, self.sendHello)
 
     def onClose(self, wasClean, code, reason):
-        print 'closing connection with reason:' + reason
+        print 'closing connection with reason:', reason
         self.connected = False
 
 class Client():

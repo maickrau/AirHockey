@@ -79,6 +79,8 @@ class Session:
             self.input(client, msg)
         elif msg_type == 'leaving':
             self.broadcast_msg({'type': 'leave'})
+            for c in self.clients:
+                c.sendClose()
 
     def input(self, client, msg):
         self.check_input(client, msg)
