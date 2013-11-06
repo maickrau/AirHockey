@@ -52,7 +52,7 @@ class MainMenu(Menu):
                               max_length=24)
         item2 = EntryMenuItem('IP:Port :', self.change_IP, 'localhost:54321',
                               max_length=24)
-	  
+
 #        resolutions = ['320x200','640x480','800x600', '1024x768', '1200x1024']
 #        item2= MultipleMenuItem('Resolution: ',
 #                        self.on_multiple_callback,
@@ -87,7 +87,7 @@ class MainMenu(Menu):
         config.single_player = single
         config.server = False
         bg = bg_layer.BgLayer()
-        game = game_layer.GameLayer()
+        game = game_layer.GameLayer(self.start_game)
         scene = Scene(bg, game)
         director.run(scene)
 		
@@ -131,7 +131,7 @@ class Credits(Menu):
         item5 = MenuItem('Slava', self.on_callback)
         item5 = MenuItem('Slava', self.on_callback)
 		#        item8 = ImageMenuItem('Credits', self.on_image_callback)
-        
+
 		
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8])

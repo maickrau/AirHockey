@@ -8,6 +8,7 @@ from util import mstime
 import AI
 from twisted.internet import reactor
 from threading import Timer, Thread
+import pyglet
 
 from copy import deepcopy
 import json
@@ -18,9 +19,9 @@ class GameLayer(cocos.layer.Layer):
     #Lets the layer receive events from director.window
     is_event_handler = True
 
-    def __init__(self):
+    def __init__(self, start_game_callback):
         super(GameLayer, self).__init__()
-
+        self.start_game = start_game_callback
         self.entity_manager = EntityManager(0)
         self.entity_manager2 = EntityManager(0)
         self.skip = 0
@@ -160,6 +161,8 @@ class GameLayer(cocos.layer.Layer):
 
 
     def on_key_press(self, key, modifiers):
+        if key == 114:
+            self.restart()
         if hasattr(self, 'input_manager'):
             self.input_manager.update_key(key, 1)
 
@@ -185,3 +188,6 @@ class GameLayer(cocos.layer.Layer):
             print 'Total hard skips: %d - %.1f%%' % (self.total_hard_skip_count, hard_percent)
         reactor.stop()
         cocos.director.director.pop()
+
+    def restart(self):
+        self.start_game(1)
