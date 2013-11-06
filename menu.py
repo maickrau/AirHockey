@@ -59,8 +59,8 @@ class MainMenu(Menu):
         # then add the items
 #        item1= ToggleMenuItem('ToggleMenuItem: ', self.on_toggle_callback,# True )
 
-        item1 = EntryMenuItem('Your name:', self.on_entry_callback, '',
-                              max_length=24)
+#        item1 = EntryMenuItem('Your name:', self.on_entry_callback, '',
+#                              max_length=24)
 #        item2 = EntryMenuItem('IP:Port :', self.change_IP, 'localhost:54321',                              max_length=24)
 
 #        resolutions = ['320x200','640x480','800x600', '1024x768', '1200x1024']
@@ -93,7 +93,7 @@ class MainMenu(Menu):
         
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8])
-        self.create_menu( [item1, item3,item4,item5,item2, item7, item8, item10, item9])
+        self.create_menu( [item3,item4,item5,item2, item7, item8, item10, item9])
 
 
 
