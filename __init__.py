@@ -12,6 +12,9 @@ import config
 import pyglet
 from pyglet import clock
 
+from threading import Thread
+from twisted.internet import reactor
+
 import menu
 
 #Entry point
@@ -22,4 +25,7 @@ if __name__ == "__main__":
 
     pyglet.font.add_directory('.')
 
+    Thread(target=reactor.run, kwargs={'installSignalHandlers': 0}).start()
     cocos.director.director.run( cocos.scene.Scene( menu.MainMenu() ) )
+    #director.run returns only after all scenes have finished
+    reactor.stop()

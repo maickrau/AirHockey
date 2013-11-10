@@ -261,8 +261,6 @@ class GameLayer(cocos.layer.Layer):
             print 'Total soft skips: %d - %.1f%%' % (self.total_soft_skip_count, soft_percent)
             hard_percent = self.total_hard_skip_count * 100.0 / total_states
             print 'Total hard skips: %d - %.1f%%' % (self.total_hard_skip_count, hard_percent)
-        if do_quit:
-            reactor.stop()
         cocos.director.director.pop()
 
     def restart(self):
