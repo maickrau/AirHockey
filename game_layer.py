@@ -33,9 +33,6 @@ class GameLayer(cocos.layer.Layer):
         self.game_over = False
         self.goals1 = 0
         self.goals2 = 0
-        self.end_label = cocos.text.Label("You won! You lost!", font_size=64, anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
-        self.end_label.element.text = ""
-        self.end_label.position = config.width/2, config.height/2
         self.goalsign = cocos.text.Label("0123456789-", font_size=32, anchor_x='center',anchor_y='top', color=(0, 0, 0, 255))
         self.goalsign.position = config.width/2, config.height
         self._update_score_signs()
@@ -149,9 +146,6 @@ class GameLayer(cocos.layer.Layer):
         Called within reactor's thread
         """
         if self.game_over:
-            self.end_timer.addTime(dt)
-            if self.end_timer.isDone():
-                self.shutdown()
             return
         #print json.dumps(StateItem(self.entity_manager.entities, {'seq': 0}).state())
         start = mstime()
@@ -188,14 +182,23 @@ class GameLayer(cocos.layer.Layer):
         if config.single_player or config.server:
             self._check_goals()
         if self._check_quit_condition():
-            self.end_timer = util.Timer(3)
-            if self._did_i_win():
-                self.end_label.element.text = "You won!"
-            else:
-                self.end_label.element.text = "You lost!"
-            self.add(self.end_label)
+            # We have to use pyglet's scheduler because show_end_text creates a text label
+            # Creating/modifying a label at the 'wrong' time will cause an error in pyglet
+            pyglet.clock.schedule_once(self._show_end_text, 0)
             self.game_over = True
         #print 'seq:', self.input_manager.serial['seq'], 'spent time:', mstime(start)
+
+    def _show_end_text(self, dt):
+        end_label = cocos.text.Label("", font_size=64, anchor_x='center', anchor_y='bottom', color=(0, 0, 0, 255))
+        end_label.position = config.width/2, config.height/2
+        if self._did_i_win():
+            end_label.element.text = "You won!"
+        else:
+            end_label.element.text = "You lost!"
+        self.add(end_label)
+        continue_label = cocos.text.Label("Press Enter to continue", font_size=16, anchor_x='center', anchor_y='top', color=(0, 0, 0, 255))
+        continue_label.position = config.width/2, config.height/2-16
+        self.add(continue_label)
 
     def update_from_server(self, state):
         start_time = mstime()
@@ -230,6 +233,8 @@ class GameLayer(cocos.layer.Layer):
 
 
     def on_key_press(self, key, modifiers):
+        if key == 65293 and self.game_over: #65293 is enter
+            self.shutdown()
         if key == 114 and config.single_player:
             self.restart()
         if hasattr(self, 'input_manager'):
