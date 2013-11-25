@@ -66,7 +66,8 @@ class MainMenu(Menu):
 #                        resolutions)
         item2 = MenuItem('Settings', self.settings_callback)
 
-        item3 = MenuItem('Multiplayer Game', self.start_game, 0)
+        item3 = MenuItem('Network Game', self.start_game, 0)
+        item5 = MenuItem('Local Multiplayer', self.start_game, 2)
         item4 = MenuItem('Single Player', self.start_game, 1)
 #        item5 = MenuItem('High Score', self.on_callback)
         
@@ -90,12 +91,16 @@ class MainMenu(Menu):
         
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8])
-        self.create_menu( [item3,item4,item2, item7, item8, item10, item9])
+        self.create_menu( [item3,item5,item4,item2, item7, item8, item10, item9])
 
 
 
 
     def start_game(self, single):
+        if single == 2:
+            config.local_multiplayer = True
+        else:
+            config.local_multiplayer = False
         config.single_player = single
         config.server = False
         bg = bg_layer.BgLayer()

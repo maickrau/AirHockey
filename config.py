@@ -3,15 +3,28 @@ import sys
 
 # the server should not import cocos or pyglet
 bindings = {
-    65361: 'left', # key.LEFT
-    65363: 'right', # key.RIGHT
-    65362: 'up', # key.UP
-    65364: 'down', # key.DOWN
+    65361: 'left2', # arrow left
+    65363: 'right2', # arrow right
+    65362: 'up2', # arrow up
+    65364: 'down2', # arrow down
 
+    65460: 'left', # numpad left
+    65462: 'right', # numpad right
+    65464: 'up', # numpad up
+    65458: 'down', # numpad down
+}
+
+
+bindings2 = {
     97: 'left2', # key.A
     100: 'right2', # key.D
     119: 'up2', # key.W
     115: 'down2', # key.S
+
+    118: 'left', # key.V
+    110: 'right', # key.N
+    103: 'up', # key.G
+    98: 'down', # key.B
 }
 
 tick = 0.02
@@ -33,6 +46,7 @@ goal_wall_distance = 100
 goal_width = 200
 goal_depth = 50
 
+local_multiplayer = False
 server = False
 single_player = 0
 server_url = "ws://localhost:54321"

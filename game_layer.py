@@ -91,6 +91,8 @@ class GameLayer(cocos.layer.Layer):
 
     def pre_init(self, msg):
         self.input_manager = input.InputManager(msg['num'])
+        if config.local_multiplayer:
+            self.input_manager2 = input.InputManager('2', 2)
         self.physics_manager = physics.PhysicsManager(self.entity_manager.entities)
         self.physics_manager2 = physics.PhysicsManager(self.entity_manager2.entities)
 
@@ -163,8 +165,10 @@ class GameLayer(cocos.layer.Layer):
         # sending to server and physics computation
         local_input = deepcopy(self.input_manager.serial)
         if config.single_player:
-#            ai_input = AI.AI_commands(self.entity_manager.entities)
-            ai_input = AI.AI_commands(self.entity_manager)
+            if config.local_multiplayer:
+                ai_input = self.input_manager2.serial
+            else:
+                ai_input = AI.AI_commands(self.entity_manager)
             ai_input['seq'] = self.seq
             local_input.update(ai_input)
         last_hist_item = self.entity_manager.state_history.get_last()
@@ -191,10 +195,16 @@ class GameLayer(cocos.layer.Layer):
     def _show_end_text(self, dt):
         end_label = cocos.text.Label("", font_size=64, anchor_x='center', anchor_y='bottom', color=(0, 0, 0, 255))
         end_label.position = config.width/2, config.height/2
-        if self._did_i_win():
-            end_label.element.text = "You won!"
+        if not config.local_multiplayer:
+            if self._did_i_win():
+                end_label.element.text = "You won!"
+            else:
+                end_label.element.text = "You lost!"
         else:
-            end_label.element.text = "You lost!"
+            if self._did_i_win():
+                end_label.element.text = "Player 1 won!"
+            else:
+                end_label.element.text = "Player 2 won!"
         self.add(end_label)
         continue_label = cocos.text.Label("Press Enter to continue", font_size=16, anchor_x='center', anchor_y='top', color=(0, 0, 0, 255))
         continue_label.position = config.width/2, config.height/2-16
@@ -239,10 +249,14 @@ class GameLayer(cocos.layer.Layer):
             self.restart()
         if hasattr(self, 'input_manager'):
             self.input_manager.update_key(key, 1)
+        if hasattr(self, 'input_manager2'):
+            self.input_manager2.update_key(key, 1)
 
     def on_key_release(self, key, modifiers):
         if hasattr(self, 'input_manager'):
             self.input_manager.update_key(key, 0)
+        if hasattr(self, 'input_manager2'):
+            self.input_manager2.update_key(key, 0)
 
     def on_close(self):
         print 'Close button pressed, shutting down'

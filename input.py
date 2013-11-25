@@ -3,19 +3,23 @@ from copy import deepcopy
 
 class InputManager():
 
-    def __init__(self, num):
+    def __init__(self, num, player=1):
         # to be used for serialized representation of input state
         self.serial = {
             'letters' + num: {'x': 0, 'y': 0}, 
             'arrows' + num: {'x': 0, 'y': 0}, 'seq': 0, 'type': 'input'
         }
+        self.player = player
         self.buttons = {}
         self.num = num
         for v in config.bindings.values():
             self.buttons[v] = 0
 
     def update_key(self, k, pressed):
-        binds = config.bindings
+        if self.player == 1:
+            binds = config.bindings
+        else:
+            binds = config.bindings2
         if k in binds:
             self.buttons[binds[k]] = pressed
 
