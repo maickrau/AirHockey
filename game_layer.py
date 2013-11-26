@@ -34,7 +34,7 @@ class GameLayer(cocos.layer.Layer):
         self.goals1 = 0
         self.goals2 = 0
         self.goalsign = cocos.text.Label("0123456789-", font_size=32, anchor_x='center',anchor_y='top', color=(0, 0, 0, 255))
-        self.goalsign.position = config.width/2, config.height
+        self.goalsign.position = config.field_width/2, config.field_height
         self._update_score_signs()
         self.add(self.goalsign)
         self.send_times = []
@@ -190,14 +190,14 @@ class GameLayer(cocos.layer.Layer):
 
     def _show_end_text(self, dt):
         end_label = cocos.text.Label("", font_size=64, anchor_x='center', anchor_y='bottom', color=(0, 0, 0, 255))
-        end_label.position = config.width/2, config.height/2
+        end_label.position = config.field_width/2, config.field_height/2
         if self._did_i_win():
             end_label.element.text = "You won!"
         else:
             end_label.element.text = "You lost!"
         self.add(end_label)
         continue_label = cocos.text.Label("Press Enter to continue", font_size=16, anchor_x='center', anchor_y='top', color=(0, 0, 0, 255))
-        continue_label.position = config.width/2, config.height/2-16
+        continue_label.position = config.field_width/2, config.field_height/2-16
         self.add(continue_label)
 
     def update_from_server(self, state):

@@ -28,7 +28,7 @@ def AI_commands(state):
 	
 	
 	
-	pos_goalx=config.width/2
+	pos_goalx=config.field_width/2
 	pos_goaly=0
 	# In theory powerup locations also.
 	# And opponent's balls also

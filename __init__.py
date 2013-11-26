@@ -20,7 +20,7 @@ import menu
 #Entry point
 if __name__ == "__main__":
     #clock.set_fps_limit(120)
-    cocos.director.director.init(vsync=True, height=config.height, width=config.width)
+    cocos.director.director.init(vsync=True, height=config.screen_height, width=config.screen_width)
     cocos.director.director.show_FPS = True
 
     pyglet.font.add_directory('.')
