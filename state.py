@@ -45,6 +45,8 @@ class EntityManager():
 
     def _generate_entities(self, server=0):
 
+        entities = []
+
         #walls for everyone
         #left
         wall_points = []
@@ -54,6 +56,7 @@ class EntityManager():
         wall_points.append(eu.Point2(config.field_width/2-config.goal_width/2, config.goal_depth))
         walls_left = entity.WallStrip("walls_left")
         walls_left.points = wall_points
+        entities.append(walls_left)
 
         #right
         wall_points = []
@@ -63,21 +66,36 @@ class EntityManager():
         wall_points.append(eu.Point2(config.field_width/2+config.goal_width/2, config.goal_depth))
         walls_right = entity.WallStrip("walls_right")
         walls_right.points = wall_points
+        entities.append(walls_right)
 
         ball1_1 = entity.PlayerControlledBall(eu.Point2(config.field_width/4, 100), 'letters1')
         ball1_2 = entity.PlayerControlledBall(eu.Point2(3*config.field_width/4, 100), 'arrows1')
         ball2_1 = entity.PlayerControlledBall(eu.Point2(config.field_width/4, 700), 'letters2')
         ball2_2 = entity.PlayerControlledBall(eu.Point2(3*config.field_width/4, 700), 'arrows2')
         puck = entity.Ball(eu.Point2(config.field_width/2, config.field_height/2), 'puck')
-        stopPower = entity.StopPowerUp(eu.Point2(200, 200), 'stopPower')
+        entities.append(ball1_1)
+        entities.append(ball1_2)
+        entities.append(ball2_1)
+        entities.append(ball2_2)
+        entities.append(puck)
+
+        #PowerUps
+        powerUp1 = entity.StopPowerUp(eu.Point2(config.field_width/4, config.field_height/2), 'stopPower')
+        powerUp2 = entity.StopPowerUp(eu.Point2(config.field_width*0.75, config.field_height/2), 'stopPower')
+        entities.append(powerUp1)
+        entities.append(powerUp2)
 
         #walls close to goal
         wall_player1_goal = entity.Wall(eu.Point2(0, config.goal_depth+config.goal_wall_distance), eu.Point2(config.field_width, config.goal_depth+config.goal_wall_distance), "wall_player1_goal")
         wall_player2_goal = entity.Wall(eu.Point2(0, config.field_height-config.goal_depth-config.goal_wall_distance), eu.Point2(config.field_width, config.field_height-config.goal_depth-config.goal_wall_distance), "wall_player2_goal")
+        entities.append(wall_player1_goal)
+        entities.append(wall_player2_goal)
 
         #goal lines
         goal_player1 = entity.Wall(eu.Point2(config.field_width/2-config.goal_width/2, config.goal_depth), eu.Point2(config.field_width/2+config.goal_width/2, config.goal_depth), "player1_goal")
         goal_player2 = entity.Wall(eu.Point2(config.field_width/2-config.goal_width/2, config.field_height-config.goal_depth), eu.Point2(config.field_width/2+config.goal_width/2, config.field_height-config.goal_depth), "player2_goal")
+        entities.append(goal_player1)
+        entities.append(goal_player2)
 
         ball1_1.dont_collide = [wall_player1_goal]
         ball1_2.dont_collide = [wall_player1_goal]
@@ -86,7 +104,7 @@ class EntityManager():
 
         puck.dont_collide = [wall_player1_goal, wall_player2_goal, goal_player1, goal_player2]
 
-        return [ball1_1, ball1_2, ball2_1, ball2_2, puck, walls_left, walls_right, stopPower, wall_player1_goal, wall_player2_goal, goal_player1, goal_player2]
+        return entities
 
     def update(self, dt):
         #Update power ups

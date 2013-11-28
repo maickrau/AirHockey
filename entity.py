@@ -96,3 +96,4 @@ class StopPowerUp(PowerUp):
         self.timer = util.Timer(5)
         self.visible = False
         self.used = True
+
