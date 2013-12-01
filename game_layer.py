@@ -99,9 +99,9 @@ class GameLayer(cocos.layer.Layer):
             self.add(e)
             colors = {
                 'arrows1': (255, 0, 0),
-                'arrows2': (0, 255, 0),
-                'letters1': (0, 0, 255),
-                'letters2': (255, 255, 0),
+                'arrows2': (0, 0, 255),
+                'letters1': (255, 128, 0),
+                'letters2': (0, 128, 255),
             }
             color = colors.get(e.ident)
             if color:

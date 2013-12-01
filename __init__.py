@@ -23,6 +23,7 @@ if __name__ == "__main__":
     cocos.director.director.init(vsync=True, height=config.screen_height, width=config.screen_width)
     cocos.director.director.show_FPS = True
 
+	
     pyglet.font.add_directory('.')
 
     Thread(target=reactor.run, kwargs={'installSignalHandlers': 0}).start()
