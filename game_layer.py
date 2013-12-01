@@ -35,9 +35,14 @@ class GameLayer(cocos.layer.Layer):
         self.goals2 = 0
         self.goalsign = cocos.text.Label("0123456789-", font_size=32, anchor_x='center',anchor_y='top', color=(0, 0, 0, 255))
         self.goalsign.position = config.field_width/2, config.field_height
+        self.ready_message = cocos.text.Label("Get ready", font_size=64, anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
+        self.go_message = cocos.text.Label("GO!", font_size=96, anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
+        self.ready_message.position = config.field_width/2, config.field_height/2
+        self.go_message.position = self.ready_message.position
         self._update_score_signs()
         self.add(self.goalsign)
         self.send_times = []
+        self.paused = False
 
         if not config.single_player:
             if not is_restart:
@@ -58,6 +63,25 @@ class GameLayer(cocos.layer.Layer):
         self.seq = self.input_manager.serial['seq'] = 0
         self.entity_manager.reset()
         self._update_score_signs()
+        self._get_ready()
+
+    def _get_ready(self):
+        #pause the game and show "get ready"
+        if self._check_quit_condition():
+            return
+        self.paused = True
+        self.add(self.ready_message)
+        reactor.callLater(config.get_ready_time, self._remove_get_ready)
+
+    def _remove_get_ready(self):
+        #unpause, replace "get ready" with "go"
+        self.paused = False
+        self.remove(self.ready_message)
+        self.add(self.go_message)
+        reactor.callLater(config.go_time, self._remove_go)
+
+    def _remove_go(self):
+        self.remove(self.go_message)
 
     def _did_i_win(self):
         if self.input_manager.num == '1':
@@ -78,6 +102,7 @@ class GameLayer(cocos.layer.Layer):
             self.goals2 += 1
         self.entity_manager.reset()
         self._update_score_signs()
+        self._get_ready()
 
     def _update_score_signs(self):
         self.goalsign.element.text = str(self.goals1) + '-' + str(self.goals2)
@@ -114,6 +139,8 @@ class GameLayer(cocos.layer.Layer):
 
         # Set a timer-based updater for internal state
         self.updater(self.update_state, config.tick)
+
+        self._get_ready()
 
     def updater(self, func, interval):
         """Thread-based timer
@@ -157,6 +184,8 @@ class GameLayer(cocos.layer.Layer):
         """Sends input over network and calls physics_manager's update
         Called within reactor's thread
         """
+        if self.paused:
+            return
         if self.game_over:
             return
         #print json.dumps(StateItem(self.entity_manager.entities, {'seq': 0}).state())

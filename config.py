@@ -66,6 +66,11 @@ goal_wall_distance = 100
 goal_width = 200
 goal_depth = 50
 
+#time the "get ready" message pauses before starting, in seconds
+get_ready_time = 2
+#time the "go" message stays when game is started, in seconds
+go_time = 0.5
+
 local_multiplayer = False
 server = False
 single_player = 0

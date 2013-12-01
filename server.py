@@ -63,10 +63,14 @@ class Session:
             c.last_seq = 0
 
     def start(self):
-        self.in_pause = 0
+        #send the clients pre-init info and wait for "get ready" before actually starting
         print 'sending pre_init'
         for c in self.clients:
             c.send_msg({'type': 'pre_init', 'num': str(c.num)})
+        reactor.callLater(config.get_ready_time, self.unpause)
+
+    def unpause(self):
+        self.in_pause = 0
 
     def reset(self):
         self.__init__()
@@ -127,7 +131,7 @@ class Session:
             self.broadcast_msg(score)
             self.in_pause = 1
             self.reset()
-            reactor.callLater(5, self.start)
+            self.start()
             return
         #self.broadcast_msg(item)
         for c in self.clients:
