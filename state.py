@@ -2,6 +2,7 @@ import math
 from util import *
 import config
 import entity
+import random
 
 class EntityManager():
 
@@ -39,6 +40,13 @@ class EntityManager():
         ball2_2 = self.getByIdent('arrows2')
         ball2_2.pos = eu.Point2(3*config.field_width/4, 700)
         ball2_2.vel = eu.Vector2(0, 0)
+
+        powerUp1 = self.getByIdent('powerUp1')
+        powerUp2 = self.getByIdent('powerUp2')
+        powerUp1 = self.getRandomPowerUp(eu.Point2(config.field_width/4, config.field_height/2), 'powerUp1')
+        powerUp2 = self.getRandomPowerUp(eu.Point2(config.field_width*0.75, config.field_height/2), 'powerUp2')
+        self.addEntity(powerUp1)
+        self.addEntity(powerUp2)
 
         self.state_history = History()
         print "Resetting"
@@ -80,8 +88,8 @@ class EntityManager():
         entities.append(puck)
 
         #PowerUps
-        powerUp1 = entity.StopPowerUp(eu.Point2(config.field_width/4, config.field_height/2), 'stopPower')
-        powerUp2 = entity.StopPowerUp(eu.Point2(config.field_width*0.75, config.field_height/2), 'stopPower')
+        powerUp1 = self.getRandomPowerUp(eu.Point2(config.field_width/4, config.field_height/2), 'powerUp1')
+        powerUp2 = self.getRandomPowerUp(eu.Point2(config.field_width*0.75, config.field_height/2), 'powerUp2')
         entities.append(powerUp1)
         entities.append(powerUp2)
 
@@ -128,6 +136,16 @@ class EntityManager():
     def compare_server_state(self, state):
         local_state = self.state_history.get(state['seq'])
         print 'compare result',  StateItem.compare(local_state, state)
+
+    def getRandomPowerUp(self, position, ident):
+        randomType = random.choice([1, 2])
+        if randomType == 1:
+            return entity.GrowPowerUp(position, ident)
+        if randomType == 2:
+            return entity.StopPowerUp(position, ident)
+
+    def addEntity(self, entity):
+        self.entities.append(entity)
 
     #TODO ident generator/manager
 

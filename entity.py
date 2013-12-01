@@ -97,3 +97,35 @@ class StopPowerUp(PowerUp):
         self.visible = False
         self.used = True
 
+#Grows ball for 10 seconds
+class GrowPowerUp(PowerUp):
+
+    def __init__(self, init_pos, ident):
+        super(GrowPowerUp, self).__init__(init_pos, ident, "res/grow.png")
+        self.used = False
+        #temp radius, used only in physics atm because no other shapes
+        self.radius = config.radius
+
+    def update(self, dt, entities):
+        if self.remove:
+            return
+        if not self.used:
+            for e in entities:
+                if isinstance(e, PlayerControlledBall):
+                    if physics.PhysicsManager.isColliding(self, e):
+                        self.ball = e
+                        self._trigger()
+        elif self.used:
+            self.timer.addTime(dt)
+            if self.timer.isDone():
+                self.ball.scale = 1
+                self.ball.radius = config.radius
+            else:
+                self.ball.scale = 2
+                self.ball.radius = config.radius * 2
+
+    def _trigger(self):
+        self.timer = util.Timer(10)
+        self.visible = False
+        self.used = True
+
