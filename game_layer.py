@@ -301,7 +301,7 @@ class GameLayer(cocos.layer.Layer):
     def on_key_press(self, key, modifiers):
         if key == 65293 and self.game_over: #65293 is enter
             self.shutdown()
-        if key == 114 and config.single_player:
+        if key == 114 and config.single_player: # letter R
             self.restart()
         if hasattr(self, 'input_manager'):
             self.input_manager.update_key(key, 1)
@@ -322,7 +322,7 @@ class GameLayer(cocos.layer.Layer):
         if hasattr(self, 'updater_delayed') and self.updater_delayed.active():
             self.updater_delayed.cancel()
 
-    def shutdown(self, do_quit=0):
+    def shutdown(self, do_quit=0, no_pop=0):
         if self.shutting_down:
             return
         self.shutting_down = 1
