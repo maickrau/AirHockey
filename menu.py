@@ -21,6 +21,7 @@ import __init__
 import config
 import game_layer
 import bg_layer
+import audience_layer
 
 #from cocos.menu import Menu, MenuItem, RIGHT
 from cocos.director import director
@@ -105,8 +106,12 @@ class MainMenu(Menu):
         config.server = False
         bg = bg_layer.BgLayer()
         game = game_layer.GameLayer(self.start_game)
+        audience = audience_layer.AudienceLayer()
         self.restart_game = True
-        scene = Scene(bg, game)
+        scene = Scene(bg, game, audience)
+        game.position = (config.screen_width-config.field_width)/2, 0
+        bg.position = game.position
+
         director.push(scene)
         
     def on_quit( self ):
@@ -173,7 +178,7 @@ class Tutorial(Menu):
 
         item1 = ImageMenuItem('Tutorial_image.jpg', self.on_image_callback)
         item1.scale=5
-        bg = cocos.sprite.Sprite("res/field.png", position=(config.width,config.height))
+        bg = cocos.sprite.Sprite("res/field.png", position=(config.screen_width,config.screen_height))
         item2 = MenuItem('', self.on_callback)
 
         item3 = MenuItem('Back', self.on_callback)        

@@ -52,9 +52,13 @@ decel = 10.0
 radius = 16.0
 elasticity = 1.0 #1 is perfectly elastic collisions, 0 is perfectly inelastic
 mass = 1.0
+difficulty=1
 
-height = 800
-width = 600
+screen_height = 800
+screen_width = 800
+
+field_height = 800
+field_width = 600
 
 #players "own walls" distance from goal
 goal_wall_distance = 100

@@ -2,6 +2,7 @@ import math
 from util import *
 import config
 import entity
+import random
 
 class EntityManager():
 
@@ -14,7 +15,7 @@ class EntityManager():
 	puck = self.getByIdent('puck')
 	if (puck.pos.y < config.goal_depth):
 		return 2
-	elif (puck.pos.y > (config.height - config.goal_depth)):
+	elif (puck.pos.y > (config.field_height - config.goal_depth)):
 		return 1
 	return 0
 
@@ -25,19 +26,19 @@ class EntityManager():
 
     def reset(self):
         puck = self.getByIdent('puck')
-        puck.pos = eu.Point2(config.width/2, config.height/2)
+        puck.pos = eu.Point2(config.field_width/2, config.field_height/2)
         puck.vel = eu.Vector2(0, 0)
         ball1_1 = self.getByIdent('letters1')
-        ball1_1.pos = eu.Point2(config.width/4, 100)
+        ball1_1.pos = eu.Point2(config.field_width/4, 100)
         ball1_1.vel = eu.Vector2(0, 0)
         ball1_2 = self.getByIdent('arrows1')
-        ball1_2.pos = eu.Point2(3*config.width/4, 100)
+        ball1_2.pos = eu.Point2(3*config.field_width/4, 100)
         ball1_2.vel = eu.Vector2(0, 0)
         ball2_1 = self.getByIdent('letters2')
-        ball2_1.pos = eu.Point2(config.width/4, 700)
+        ball2_1.pos = eu.Point2(config.field_width/4, 700)
         ball2_1.vel = eu.Vector2(0, 0)
         ball2_2 = self.getByIdent('arrows2')
-        ball2_2.pos = eu.Point2(3*config.width/4, 700)
+        ball2_2.pos = eu.Point2(3*config.field_width/4, 700)
         ball2_2.vel = eu.Vector2(0, 0)
 
         self.state_history = History()
@@ -45,39 +46,57 @@ class EntityManager():
 
     def _generate_entities(self, server=0):
 
+        entities = []
+
         #walls for everyone
         #left
         wall_points = []
-        wall_points.append(eu.Point2(config.width/2-config.goal_width/2, config.height-config.goal_depth))
-        wall_points.append(eu.Point2(0, config.height-config.goal_depth))
+        wall_points.append(eu.Point2(config.field_width/2-config.goal_width/2, config.field_height-config.goal_depth))
+        wall_points.append(eu.Point2(0, config.field_height-config.goal_depth))
         wall_points.append(eu.Point2(0, config.goal_depth))
-        wall_points.append(eu.Point2(config.width/2-config.goal_width/2, config.goal_depth))
+        wall_points.append(eu.Point2(config.field_width/2-config.goal_width/2, config.goal_depth))
         walls_left = entity.WallStrip("walls_left")
         walls_left.points = wall_points
+        entities.append(walls_left)
 
         #right
         wall_points = []
-        wall_points.append(eu.Point2(config.width/2+config.goal_width/2, config.height-config.goal_depth))
-        wall_points.append(eu.Point2(config.width, config.height-config.goal_depth))
-        wall_points.append(eu.Point2(config.width, config.goal_depth))
-        wall_points.append(eu.Point2(config.width/2+config.goal_width/2, config.goal_depth))
+        wall_points.append(eu.Point2(config.field_width/2+config.goal_width/2, config.field_height-config.goal_depth))
+        wall_points.append(eu.Point2(config.field_width, config.field_height-config.goal_depth))
+        wall_points.append(eu.Point2(config.field_width, config.goal_depth))
+        wall_points.append(eu.Point2(config.field_width/2+config.goal_width/2, config.goal_depth))
         walls_right = entity.WallStrip("walls_right")
         walls_right.points = wall_points
+        entities.append(walls_right)
 
-        ball1_1 = entity.PlayerControlledBall(eu.Point2(config.width/4, 100), 'letters1')
-        ball1_2 = entity.PlayerControlledBall(eu.Point2(3*config.width/4, 100), 'arrows1')
-        ball2_1 = entity.PlayerControlledBall(eu.Point2(config.width/4, 700), 'letters2')
-        ball2_2 = entity.PlayerControlledBall(eu.Point2(3*config.width/4, 700), 'arrows2')
-        puck = entity.Ball(eu.Point2(config.width/2, config.height/2), 'puck')
-        stopPower = entity.StopPowerUp(eu.Point2(200, 200), 'stopPower')
+        ball1_1 = entity.PlayerControlledBall(eu.Point2(config.field_width/4, 100), 'letters1')
+        ball1_2 = entity.PlayerControlledBall(eu.Point2(3*config.field_width/4, 100), 'arrows1')
+        ball2_1 = entity.PlayerControlledBall(eu.Point2(config.field_width/4, 700), 'letters2')
+        ball2_2 = entity.PlayerControlledBall(eu.Point2(3*config.field_width/4, 700), 'arrows2')
+        puck = entity.Ball(eu.Point2(config.field_width/2, config.field_height/2), 'puck')
+        entities.append(ball1_1)
+        entities.append(ball1_2)
+        entities.append(ball2_1)
+        entities.append(ball2_2)
+        entities.append(puck)
+
+        #PowerUps
+        powerUp1 = self.getRandomPowerUp(eu.Point2(config.field_width/4, config.field_height/2), 'powerUp1')
+        powerUp2 = self.getRandomPowerUp(eu.Point2(config.field_width*0.75, config.field_height/2), 'powerUp2')
+        entities.append(powerUp1)
+        entities.append(powerUp2)
 
         #walls close to goal
-        wall_player1_goal = entity.Wall(eu.Point2(0, config.goal_depth+config.goal_wall_distance), eu.Point2(config.width, config.goal_depth+config.goal_wall_distance), "wall_player1_goal")
-        wall_player2_goal = entity.Wall(eu.Point2(0, config.height-config.goal_depth-config.goal_wall_distance), eu.Point2(config.width, config.height-config.goal_depth-config.goal_wall_distance), "wall_player2_goal")
+        wall_player1_goal = entity.Wall(eu.Point2(0, config.goal_depth+config.goal_wall_distance), eu.Point2(config.field_width, config.goal_depth+config.goal_wall_distance), "wall_player1_goal")
+        wall_player2_goal = entity.Wall(eu.Point2(0, config.field_height-config.goal_depth-config.goal_wall_distance), eu.Point2(config.field_width, config.field_height-config.goal_depth-config.goal_wall_distance), "wall_player2_goal")
+        entities.append(wall_player1_goal)
+        entities.append(wall_player2_goal)
 
         #goal lines
-        goal_player1 = entity.Wall(eu.Point2(config.width/2-config.goal_width/2, config.goal_depth), eu.Point2(config.width/2+config.goal_width/2, config.goal_depth), "player1_goal")
-        goal_player2 = entity.Wall(eu.Point2(config.width/2-config.goal_width/2, config.height-config.goal_depth), eu.Point2(config.width/2+config.goal_width/2, config.height-config.goal_depth), "player2_goal")
+        goal_player1 = entity.Wall(eu.Point2(config.field_width/2-config.goal_width/2, config.goal_depth), eu.Point2(config.field_width/2+config.goal_width/2, config.goal_depth), "player1_goal")
+        goal_player2 = entity.Wall(eu.Point2(config.field_width/2-config.goal_width/2, config.field_height-config.goal_depth), eu.Point2(config.field_width/2+config.goal_width/2, config.field_height-config.goal_depth), "player2_goal")
+        entities.append(goal_player1)
+        entities.append(goal_player2)
 
         ball1_1.dont_collide = [wall_player1_goal]
         ball1_2.dont_collide = [wall_player1_goal]
@@ -86,7 +105,7 @@ class EntityManager():
 
         puck.dont_collide = [wall_player1_goal, wall_player2_goal, goal_player1, goal_player2]
 
-        return [ball1_1, ball1_2, ball2_1, ball2_2, puck, walls_left, walls_right, stopPower, wall_player1_goal, wall_player2_goal, goal_player1, goal_player2]
+        return entities
 
     def update(self, dt):
         #Update power ups
@@ -110,6 +129,16 @@ class EntityManager():
     def compare_server_state(self, state):
         local_state = self.state_history.get(state['seq'])
         print 'compare result',  StateItem.compare(local_state, state)
+
+    def getRandomPowerUp(self, position, ident):
+        randomType = random.choice([1, 2])
+        if randomType == 1:
+            return entity.GrowPowerUp(position, ident)
+        if randomType == 2:
+            return entity.StopPowerUp(position, ident)
+
+    def addEntity(self, entity):
+        self.entities.append(entity)
 
     #TODO ident generator/manager
 
