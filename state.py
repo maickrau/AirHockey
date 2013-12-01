@@ -41,13 +41,6 @@ class EntityManager():
         ball2_2.pos = eu.Point2(3*config.field_width/4, 700)
         ball2_2.vel = eu.Vector2(0, 0)
 
-        powerUp1 = self.getByIdent('powerUp1')
-        powerUp2 = self.getByIdent('powerUp2')
-        powerUp1 = self.getRandomPowerUp(eu.Point2(config.field_width/4, config.field_height/2), 'powerUp1')
-        powerUp2 = self.getRandomPowerUp(eu.Point2(config.field_width*0.75, config.field_height/2), 'powerUp2')
-        self.addEntity(powerUp1)
-        self.addEntity(powerUp2)
-
         self.state_history = History()
         print "Resetting"
 
