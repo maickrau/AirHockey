@@ -15,6 +15,8 @@ from copy import deepcopy
 import json
 import random
 
+import sounds
+
 class GameLayer(cocos.layer.Layer):
 
     #Lets the layer receive events from director.window
@@ -43,6 +45,12 @@ class GameLayer(cocos.layer.Layer):
         self.add(self.goalsign)
         self.send_times = []
         self.paused = False
+        
+        self.playing_sounds = []
+        self.background_player = pyglet.media.Player()
+        self.background_player.eos_action = 'loop'
+#        self.background_player.queue(sounds.background)
+#        self.background_player.play()
 
         if not config.single_player:
             if not is_restart:
@@ -64,6 +72,7 @@ class GameLayer(cocos.layer.Layer):
         self.entity_manager.reset()
         self._update_score_signs()
         self._get_ready()
+#        self.playing_sounds.append(sounds.goal.play())
 
     def _get_ready(self):
         #pause the game and show "get ready"
@@ -79,6 +88,7 @@ class GameLayer(cocos.layer.Layer):
         self.remove(self.ready_message)
         self.add(self.go_message)
         reactor.callLater(config.go_time, self._remove_go)
+        self.playing_sounds.append(sounds.go.play())
 
     def _remove_go(self):
         self.remove(self.go_message)
@@ -103,6 +113,7 @@ class GameLayer(cocos.layer.Layer):
         self.entity_manager.reset()
         self._update_score_signs()
         self._get_ready()
+#        self.playing_sounds.append(sounds.goal.play())
 
     def _update_score_signs(self):
         self.goalsign.element.text = str(self.goals1) + '-' + str(self.goals2)
@@ -237,13 +248,17 @@ class GameLayer(cocos.layer.Layer):
         if not config.local_multiplayer:
             if self._did_i_win():
                 end_label.element.text = "You won!"
+#                self.playing_sounds.append(sounds.win.play())
             else:
                 end_label.element.text = "You lost!"
+#                self.playing_sounds.append(sounds.lose.play())
         else:
             if self._did_i_win():
                 end_label.element.text = "Player 1 won!"
             else:
                 end_label.element.text = "Player 2 won!"
+            # everyone is a winner
+#            self.playing_sounds.append(sounds.win.play())
         self.add(end_label)
         continue_label = cocos.text.Label("Press Enter to continue", font_size=16, anchor_x='center', anchor_y='top', color=(0, 0, 0, 255))
         continue_label.position = config.field_width/2, config.field_height/2-16
@@ -319,6 +334,9 @@ class GameLayer(cocos.layer.Layer):
             print 'Total soft skips: %d - %.1f%%' % (self.total_soft_skip_count, soft_percent)
             hard_percent = self.total_hard_skip_count * 100.0 / total_states
             print 'Total hard skips: %d - %.1f%%' % (self.total_hard_skip_count, hard_percent)
+        self.background_player.pause()
+        for s in self.playing_sounds:
+            s.pause()
         cocos.director.director.pop()
 
     def restart(self):
