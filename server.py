@@ -52,6 +52,7 @@ class Session:
         if clients:
             self.clients = clients
             self.in_pause = 0
+            self.exch_goals = False
             for c in clients:
                 c.score = 0
         self.entity_manager = EntityManager(1)
@@ -61,6 +62,9 @@ class Session:
             c.num = i + 1
             c.input_history = History()
             c.last_seq = 0
+        if self.exch_goals:
+            self.clients[0].num = 2
+            self.clients[1].num = 1
 
     def start(self):
         self.in_pause = 0
@@ -69,6 +73,7 @@ class Session:
             c.send_msg({'type': 'pre_init', 'num': str(c.num)})
 
     def reset(self):
+        self.exch_goals = not self.exch_goals
         self.__init__()
 
     def msg(self, client, msg):

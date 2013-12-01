@@ -235,10 +235,12 @@ class GameLayer(cocos.layer.Layer):
     def on_key_press(self, key, modifiers):
         if key == 65293 and self.game_over: #65293 is enter
             self.shutdown()
-        if key == 114 and config.single_player:
+        if key == 114 and config.single_player: # letter R
             self.restart()
         if hasattr(self, 'input_manager'):
             self.input_manager.update_key(key, 1)
+        if key == 0xff1b:
+            return False
 
     def on_key_release(self, key, modifiers):
         if hasattr(self, 'input_manager'):
