@@ -2,7 +2,23 @@ import sys
 # from pyglet.window import key
 
 # the server should not import cocos or pyglet
+
+#default bindings, used in network multiplayer and singleplayer vs AI but not in local multiplayer
+
 bindings = {
+    65361: 'left', # arrow left
+    65363: 'right', # arrow right
+    65362: 'up', # arrow up
+    65364: 'down', # arrow down
+
+    97: 'left2', # key.A
+    100: 'right2', # key.D
+    119: 'up2', # key.W
+    115: 'down2', # key.S
+}
+
+#bindings for player 1 in local multiplayer
+bindings_local_multiplayer1 = {
     65361: 'left2', # arrow left
     65363: 'right2', # arrow right
     65362: 'up2', # arrow up
@@ -14,8 +30,8 @@ bindings = {
     65458: 'down', # numpad down
 }
 
-
-bindings2 = {
+#bindings for player 2 in local multiplayer
+bindings_local_multiplayer2 = {
     97: 'left2', # key.A
     100: 'right2', # key.D
     119: 'up2', # key.W

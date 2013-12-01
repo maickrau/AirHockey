@@ -90,9 +90,11 @@ class GameLayer(cocos.layer.Layer):
         return False
 
     def pre_init(self, msg):
-        self.input_manager = input.InputManager(msg['num'])
         if config.local_multiplayer:
+            self.input_manager = input.InputManager('1', 1)
             self.input_manager2 = input.InputManager('2', 2)
+        else:
+            self.input_manager = input.InputManager(msg['num'])
         self.physics_manager = physics.PhysicsManager(self.entity_manager.entities)
         self.physics_manager2 = physics.PhysicsManager(self.entity_manager2.entities)
 

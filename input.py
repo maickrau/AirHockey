@@ -3,7 +3,7 @@ from copy import deepcopy
 
 class InputManager():
 
-    def __init__(self, num, player=1):
+    def __init__(self, num, player=0):
         # to be used for serialized representation of input state
         self.serial = {
             'letters' + num: {'x': 0, 'y': 0}, 
@@ -16,10 +16,12 @@ class InputManager():
             self.buttons[v] = 0
 
     def update_key(self, k, pressed):
-        if self.player == 1:
+        if self.player == 0:
             binds = config.bindings
-        else:
-            binds = config.bindings2
+        elif self.player == 1:
+            binds = config.bindings_local_multiplayer1
+        elif self.player == 2:
+            binds = config.bindings_local_multiplayer2
         if k in binds:
             self.buttons[binds[k]] = pressed
 
