@@ -123,6 +123,13 @@ class EntityManager():
                 ball.position = world_to_view(ball.pos)
                 ball.old_int_pos = to_int_pos(ball.pos)
 
+    def recolor_balls(self, input_state):
+        for ball in self.entities:
+            ball.color = ball.default_color
+            if input_state.get(ball.ident) != None:
+                if input_state.get(ball.ident) != {'x': 0, 'y': 0}:
+                    ball.color = (c+(255-c)*0.2 for c in ball.default_color)
+
     def add_to_history(self, input_state):
         self.state_history.add(StateItem(self.entities, input_state).full_state())
 
@@ -270,5 +277,7 @@ class StateItem:
         self.decel = config.decel
         self.elasticity = config.elasticity
         self.mass = config.mass
+
+        self.default_color = (255, 255, 255)
 
         self.collidable = False

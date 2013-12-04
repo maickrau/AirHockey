@@ -146,6 +146,7 @@ class GameLayer(cocos.layer.Layer):
             color = colors.get(e.ident)
             if color:
                 e.color = color
+                e.default_color = color
 			
 
         # Set a timer-based updater for internal state
@@ -232,6 +233,7 @@ class GameLayer(cocos.layer.Layer):
             self.net.send_msg(local_input)
         self.entity_manager.update(dt)
         self.physics_manager.update(dt, input_state)
+        self.entity_manager.recolor_balls(input_state)
         self.entity_manager.add_to_history(input_state)
         if config.single_player or config.server:
             self._check_goals()
