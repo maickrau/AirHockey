@@ -15,6 +15,8 @@ from copy import deepcopy
 import json
 import random
 
+import sounds
+
 class GameLayer(cocos.layer.Layer):
 
     #Lets the layer receive events from director.window
@@ -35,9 +37,20 @@ class GameLayer(cocos.layer.Layer):
         self.goals2 = 0
         self.goalsign = cocos.text.Label("0123456789-", font_size=32, anchor_x='center',anchor_y='top', color=(0, 0, 0, 255))
         self.goalsign.position = config.field_width/2, config.field_height
+        self.ready_message = cocos.text.Label("Get ready", font_size=64, anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
+        self.go_message = cocos.text.Label("GO!", font_size=96, anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
+        self.ready_message.position = config.field_width/2, config.field_height/2
+        self.go_message.position = self.ready_message.position
         self._update_score_signs()
         self.add(self.goalsign)
         self.send_times = []
+        self.paused = False
+        
+        self.playing_sounds = []
+        self.background_player = pyglet.media.Player()
+        self.background_player.eos_action = 'loop'
+#        self.background_player.queue(sounds.background)
+#        self.background_player.play()
 
         if not config.single_player:
             if not is_restart:
@@ -58,6 +71,27 @@ class GameLayer(cocos.layer.Layer):
         self.seq = self.input_manager.serial['seq'] = 0
         self.entity_manager.reset()
         self._update_score_signs()
+        self._get_ready()
+#        self.playing_sounds.append(sounds.goal.play())
+
+    def _get_ready(self):
+        #pause the game and show "get ready"
+        if self._check_quit_condition():
+            return
+        self.paused = True
+        self.add(self.ready_message)
+        reactor.callLater(config.get_ready_time, self._remove_get_ready)
+
+    def _remove_get_ready(self):
+        #unpause, replace "get ready" with "go"
+        self.paused = False
+        self.remove(self.ready_message)
+        self.add(self.go_message)
+        reactor.callLater(config.go_time, self._remove_go)
+        self.playing_sounds.append(sounds.go.play())
+
+    def _remove_go(self):
+        self.remove(self.go_message)
 
     def _did_i_win(self):
         if self.input_manager.num == '1':
@@ -78,6 +112,8 @@ class GameLayer(cocos.layer.Layer):
             self.goals2 += 1
         self.entity_manager.reset()
         self._update_score_signs()
+        self._get_ready()
+#        self.playing_sounds.append(sounds.goal.play())
 
     def _update_score_signs(self):
         self.goalsign.element.text = str(self.goals1) + '-' + str(self.goals2)
@@ -90,7 +126,11 @@ class GameLayer(cocos.layer.Layer):
         return False
 
     def pre_init(self, msg):
-        self.input_manager = input.InputManager(msg['num'])
+        if config.local_multiplayer:
+            self.input_manager = input.InputManager('1', 1)
+            self.input_manager2 = input.InputManager('2', 2)
+        else:
+            self.input_manager = input.InputManager(msg['num'])
         self.physics_manager = physics.PhysicsManager(self.entity_manager.entities)
         self.physics_manager2 = physics.PhysicsManager(self.entity_manager2.entities)
 
@@ -106,10 +146,13 @@ class GameLayer(cocos.layer.Layer):
             color = colors.get(e.ident)
             if color:
                 e.color = color
+                e.default_color = color
 			
 
         # Set a timer-based updater for internal state
         self.updater(self.update_state, config.tick)
+
+        self._get_ready()
 
     def updater(self, func, interval):
         """Thread-based timer
@@ -153,6 +196,8 @@ class GameLayer(cocos.layer.Layer):
         """Sends input over network and calls physics_manager's update
         Called within reactor's thread
         """
+        if self.paused:
+            return
         if self.game_over:
             return
         #print json.dumps(StateItem(self.entity_manager.entities, {'seq': 0}).state())
@@ -171,8 +216,10 @@ class GameLayer(cocos.layer.Layer):
         # sending to server and physics computation
         local_input = deepcopy(self.input_manager.serial)
         if config.single_player:
-#            ai_input = AI.AI_commands(self.entity_manager.entities)
-            ai_input = AI.AI_commands(self.entity_manager)
+            if config.local_multiplayer:
+                ai_input = self.input_manager2.serial
+            else:
+                ai_input = AI.AI_commands(self.entity_manager)
             ai_input['seq'] = self.seq
             local_input.update(ai_input)
         last_hist_item = self.entity_manager.state_history.get_last()
@@ -186,6 +233,7 @@ class GameLayer(cocos.layer.Layer):
             self.net.send_msg(local_input)
         self.entity_manager.update(dt)
         self.physics_manager.update(dt, input_state)
+        self.entity_manager.recolor_balls(input_state)
         self.entity_manager.add_to_history(input_state)
         if config.single_player or config.server:
             self._check_goals()
@@ -199,10 +247,20 @@ class GameLayer(cocos.layer.Layer):
     def _show_end_text(self, dt):
         end_label = cocos.text.Label("", font_size=64, anchor_x='center', anchor_y='bottom', color=(0, 0, 0, 255))
         end_label.position = config.field_width/2, config.field_height/2
-        if self._did_i_win():
-            end_label.element.text = "You won!"
+        if not config.local_multiplayer:
+            if self._did_i_win():
+                end_label.element.text = "You won!"
+#                self.playing_sounds.append(sounds.win.play())
+            else:
+                end_label.element.text = "You lost!"
+#                self.playing_sounds.append(sounds.lose.play())
         else:
-            end_label.element.text = "You lost!"
+            if self._did_i_win():
+                end_label.element.text = "Player 1 won!"
+            else:
+                end_label.element.text = "Player 2 won!"
+            # everyone is a winner
+#            self.playing_sounds.append(sounds.win.play())
         self.add(end_label)
         continue_label = cocos.text.Label("Press Enter to continue", font_size=16, anchor_x='center', anchor_y='top', color=(0, 0, 0, 255))
         continue_label.position = config.field_width/2, config.field_height/2-16
@@ -247,10 +305,14 @@ class GameLayer(cocos.layer.Layer):
             self.restart()
         if hasattr(self, 'input_manager'):
             self.input_manager.update_key(key, 1)
+        if hasattr(self, 'input_manager2'):
+            self.input_manager2.update_key(key, 1)
 
     def on_key_release(self, key, modifiers):
         if hasattr(self, 'input_manager'):
             self.input_manager.update_key(key, 0)
+        if hasattr(self, 'input_manager2'):
+            self.input_manager2.update_key(key, 0)
 
     def on_close(self):
         print 'Close button pressed, shutting down'
@@ -274,6 +336,9 @@ class GameLayer(cocos.layer.Layer):
             print 'Total soft skips: %d - %.1f%%' % (self.total_soft_skip_count, soft_percent)
             hard_percent = self.total_hard_skip_count * 100.0 / total_states
             print 'Total hard skips: %d - %.1f%%' % (self.total_hard_skip_count, hard_percent)
+        self.background_player.pause()
+        for s in self.playing_sounds:
+            s.pause()
         cocos.director.director.pop()
 
     def restart(self):
