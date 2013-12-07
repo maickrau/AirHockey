@@ -204,6 +204,8 @@ class Settings(Menu):
 #                        self.on_multiple_callback,
 #                        resolutions)
 
+        item1 = EntryMenuItem('AI level :\n', self.change_AI, '1',
+                              max_length=24)
 		
         item2 = EntryMenuItem('IP:Port :\n', self.change_IP, 'localhost:54321',
                               max_length=24)
@@ -214,13 +216,15 @@ class Settings(Menu):
         item4 = MenuItem(' ', self.on_callback)
 
 #        self.create_menu( [item1, item2, item4 ,item3])
-        self.create_menu( [item2, item4 ,item3])
+        self.create_menu( [item1, item2, item4 ,item3])
     def on_callback(self):
         cocos.director.director.pop()
     def change_IP(self, value):    
         server_url = 'ws://' + value                        
     def on_multiple_callback(self, idx ):
         print 'multiple item callback', idx
+    def change_AI(self, value):    
+        difficulty = value                        
         
 
 		

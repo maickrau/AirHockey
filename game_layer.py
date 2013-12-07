@@ -88,7 +88,7 @@ class GameLayer(cocos.layer.Layer):
         self.remove(self.ready_message)
         self.add(self.go_message)
         reactor.callLater(config.go_time, self._remove_go)
-        self.playing_sounds.append(sounds.go.play())
+#        self.playing_sounds.append(sounds.go.play())
 
     def _remove_go(self):
         self.remove(self.go_message)
@@ -250,17 +250,17 @@ class GameLayer(cocos.layer.Layer):
         if not config.local_multiplayer:
             if self._did_i_win():
                 end_label.element.text = "You won!"
-#                self.playing_sounds.append(sounds.win.play())
+                self.playing_sounds.append(sounds.win.play())
             else:
                 end_label.element.text = "You lost!"
-#                self.playing_sounds.append(sounds.lose.play())
+                self.playing_sounds.append(sounds.lose.play())
         else:
             if self._did_i_win():
                 end_label.element.text = "Player 1 won!"
             else:
                 end_label.element.text = "Player 2 won!"
             # everyone is a winner
-#            self.playing_sounds.append(sounds.win.play())
+            self.playing_sounds.append(sounds.win.play())
         self.add(end_label)
         continue_label = cocos.text.Label("Press Enter to continue", font_size=16, anchor_x='center', anchor_y='top', color=(0, 0, 0, 255))
         continue_label.position = config.field_width/2, config.field_height/2-16

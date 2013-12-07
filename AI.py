@@ -87,6 +87,9 @@ def AI_commands(state):
 		
 		ball1x=pos_bigballx-pos_ball1x + (pos_bigballx-pos_ball1x)/abs(pos_bigballx-pos_ball1x)		
 		ball1y=pos_bigbally-pos_ball1y + (pos_bigbally-pos_ball1y)/abs(pos_bigbally-pos_ball1y)
+		ball2x=pos_bigballx-pos_ball2x + (pos_bigballx-pos_ball2x)/abs(pos_bigballx-pos_ball2x)
+		ball2y=pos_bigbally-pos_ball2y + (pos_bigbally-pos_ball2y)/abs(pos_bigbally-pos_ball2y)
+
 		if (pos_bigbally-pos_ball1y+10)>0:
 			ball1y=ball1y+150
 		if (pos_bigbally-pos_ball2y+10)>0:
@@ -94,8 +97,8 @@ def AI_commands(state):
 #		if (pos_bigballx-pos_ball1x)
 #		ball2x=pos_ball2x;
 #		ball2y=pos_ball2y;
-		ball2x=pos_bigballx-pos_ball2x + (pos_bigballx-pos_ball2x)/abs(pos_bigballx-pos_ball2x)
-		ball2y=pos_bigbally-pos_ball2y + (pos_bigbally-pos_ball2y)/abs(pos_bigbally-pos_ball2y)
+#		ball2x=pos_bigballx-pos_ball2x + (pos_bigballx-pos_ball2x)/abs(pos_bigballx-pos_ball2x)
+#		ball2y=pos_bigbally-pos_ball2y + (pos_bigbally-pos_ball2y)/abs(pos_bigbally-pos_ball2y)
 		serial= { 'letters' + num: {'x': int(ball1x), 'y': int(ball1y)}, 'arrows' + num: {'x': ball2x, 'y': ball2y}, 'seq':'0', 'type':'input'}
 		
 	return serial

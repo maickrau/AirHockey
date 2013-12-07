@@ -7,6 +7,9 @@ import pyglet
 #goal = pyglet.media.load("res/goal.wav", streaming=False)
 #lose = pyglet.media.load("res/lose.wav", streaming=False)
 
+win = pyglet.media.load("res/hymni.mp3", streaming=False)
+lose = pyglet.media.load("res/Schweden.mp3", streaming=False)
+
 go = pyglet.media.load("res/go.wav", streaming=False)
 goal = pyglet.media.load("res/go.wav", streaming=False)
 
