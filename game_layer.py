@@ -39,7 +39,7 @@ class GameLayer(cocos.layer.Layer):
         self.goalsign.position = config.field_width/2, config.field_height
         self.ready_message = cocos.text.Label("Get ready", font_size=64, anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
         self.go_message = cocos.text.Label("GO!", font_size=96, anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
-        self.ready_message.position = config.field_width/2, config.field_height/2
+        self.ready_message.position = config.field_width/2, config.field_height/2 +100
         self.go_message.position = self.ready_message.position
         self._update_score_signs()
         self.add(self.goalsign)
@@ -69,6 +69,7 @@ class GameLayer(cocos.layer.Layer):
         self.goals2 = scores['2']
         self.stop_updater()
         self.seq = self.input_manager.serial['seq'] = 0
+        self.remove_entities()
         self.entity_manager.reset()
         self._update_score_signs()
         self._get_ready()
@@ -88,7 +89,7 @@ class GameLayer(cocos.layer.Layer):
         self.remove(self.ready_message)
         self.add(self.go_message)
         reactor.callLater(config.go_time, self._remove_go)
-#        self.playing_sounds.append(sounds.go.play())
+        self.playing_sounds.append(sounds.go.play())
 
     def _remove_go(self):
         self.remove(self.go_message)
@@ -113,6 +114,7 @@ class GameLayer(cocos.layer.Layer):
             self.goals1 += 1
         elif goal == 2:
             self.goals2 += 1
+        self.remove_entities()
         self.entity_manager.reset()
         self._update_score_signs()
         self._get_ready()
@@ -127,6 +129,10 @@ class GameLayer(cocos.layer.Layer):
         if self.goals2 >= self.max_goals:
             return True
         return False
+        
+    def remove_entities(self):
+        for e in self.entity_manager.entities:
+            self.remove(e)
 
     def pre_init(self, msg):
         if config.local_multiplayer:
@@ -134,7 +140,7 @@ class GameLayer(cocos.layer.Layer):
             self.input_manager2 = input.InputManager('2', 2)
         else:
             self.input_manager = input.InputManager(msg['num'])
-            self.exch_goals = msg['exch_goals']
+        self.exch_goals = msg.get('exch_goals')
         self.physics_manager = physics.PhysicsManager(self.entity_manager.entities)
         self.physics_manager2 = physics.PhysicsManager(self.entity_manager2.entities)
 
@@ -348,7 +354,11 @@ class GameLayer(cocos.layer.Layer):
         self.background_player.pause()
         for s in self.playing_sounds:
             s.pause()
-        cocos.director.director.pop()
+        if not no_pop:
+            cocos.director.director.pop()
+        
+    def on_exit(self):
+        self.shutdown(no_pop=1)
 
     def restart(self):
         self.stop_updater()

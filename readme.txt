@@ -1,17 +1,30 @@
+=== AirHockey game ===
+
+Team:
+Alexey Sofiev
+Mikko Rautiainen
+Niklas Nyholm
+Rostislav Skudnov
+
+
 === The game ===
 
-The purpose of the game is to hit the puck into the other player's goal. You control the two red hockey paddles, and your opponent controls the two yellow paddles.
+AirHockey is a fast-paced multitasking game, which is easy to start at any time. The purpose of the game is to hit the puck into the other player's goal. One player controls the two red hockey paddles, and the other controls the two blue paddles. You may play against the AI, against another player on the same computer or over the Internet. Push your multitasking skills to the limits by controlling two paddles at the same time and crush your opponents!
 
 === Controls ===
 
-Left paddle is controlled with WASD. Right paddle with arrow keys.
+In Single player and network multiplayer, left paddle is controlled with WASD. Right paddle with arrow keys.
 
 === Single player ===
 
 The single player mode plays against a simple AI.
 
-=== Multiplayer ===
+=== Local multiplayer ===
 
-To join a multiplayer server, go to the settings tab and change the IP and port to the server's IP and port. Then you can use the multiplayer button on the main menu. The game will start when there are two players on the server.
+Two player may play on the same machine, one player uses WASD and GVBN, the other uses arrow keys and numpad arrow keys (Num Lock should be on).
+
+=== Network multiplayer ===
+
+To join a multiplayer server, choose 'Network game' and change the IP and port to the server's IP and port. Then you can press the 'Start' button to join the server. The game will start when there are two players on the server.
 
 To host a multiplayer server, simply start the server executable. The server will start on port 54321.

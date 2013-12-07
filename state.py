@@ -25,22 +25,23 @@ class EntityManager():
 			return e
 
     def reset(self):
-        puck = self.getByIdent('puck')
-        puck.pos = eu.Point2(config.field_width/2, config.field_height/2)
-        puck.vel = eu.Vector2(0, 0)
-        ball1_1 = self.getByIdent('letters1')
-        ball1_1.pos = eu.Point2(config.field_width/4, 100)
-        ball1_1.vel = eu.Vector2(0, 0)
-        ball1_2 = self.getByIdent('arrows1')
-        ball1_2.pos = eu.Point2(3*config.field_width/4, 100)
-        ball1_2.vel = eu.Vector2(0, 0)
-        ball2_1 = self.getByIdent('letters2')
-        ball2_1.pos = eu.Point2(config.field_width/4, 700)
-        ball2_1.vel = eu.Vector2(0, 0)
-        ball2_2 = self.getByIdent('arrows2')
-        ball2_2.pos = eu.Point2(3*config.field_width/4, 700)
-        ball2_2.vel = eu.Vector2(0, 0)
+        # puck = self.getByIdent('puck')
+        # puck.pos = eu.Point2(config.field_width/2, config.field_height/2)
+        # puck.vel = eu.Vector2(0, 0)
+        # ball1_1 = self.getByIdent('letters1')
+        # ball1_1.pos = eu.Point2(config.field_width/4, 100)
+        # ball1_1.vel = eu.Vector2(0, 0)
+        # ball1_2 = self.getByIdent('arrows1')
+        # ball1_2.pos = eu.Point2(3*config.field_width/4, 100)
+        # ball1_2.vel = eu.Vector2(0, 0)
+        # ball2_1 = self.getByIdent('letters2')
+        # ball2_1.pos = eu.Point2(config.field_width/4, 700)
+        # ball2_1.vel = eu.Vector2(0, 0)
+        # ball2_2 = self.getByIdent('arrows2')
+        # ball2_2.pos = eu.Point2(3*config.field_width/4, 700)
+        # ball2_2.vel = eu.Vector2(0, 0)
 
+        self.entities = self._generate_entities(0)
         self.state_history = History()
         print "Resetting"
 
@@ -81,8 +82,8 @@ class EntityManager():
         entities.append(puck)
 
         #PowerUps
-        powerUp1 = self.getRandomPowerUp(eu.Point2(config.field_width/4, config.field_height/2), 'powerUp1')
-        powerUp2 = self.getRandomPowerUp(eu.Point2(config.field_width*0.75, config.field_height/2), 'powerUp2')
+        powerUp1 = entity.StopPowerUp(eu.Point2(config.field_width/4, config.field_height/2), 'powerUp1')
+        powerUp2 = entity.GrowPowerUp(eu.Point2(config.field_width*0.75, config.field_height/2), 'powerUp2')
         entities.append(powerUp1)
         entities.append(powerUp2)
 
@@ -122,6 +123,7 @@ class EntityManager():
             if self._should_render(ball.old_int_pos, ball.pos):
                 ball.position = world_to_view(ball.pos)
                 ball.old_int_pos = to_int_pos(ball.pos)
+                ball.scale = ball.radius/config.radius
 
     def recolor_balls(self, input_state):
         for ball in self.entities:

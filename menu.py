@@ -67,7 +67,7 @@ class MainMenu(Menu):
 #                        resolutions)
         item2 = MenuItem('Settings', self.settings_callback)
 
-        item3 = MenuItem('Network Game', self.start_game, 0)
+        item3 = MenuItem('Network Game', self.network_game_settings)
         item5 = MenuItem('Local Multiplayer', self.start_game, 2)
         item4 = MenuItem('Single Player', self.start_game, 1)
 #        item5 = MenuItem('High Score', self.on_callback)
@@ -147,6 +147,9 @@ class MainMenu(Menu):
     def settings_callback(self):
 
         cocos.director.director.push( cocos.scene.Scene( Settings() ) )
+    def network_game_settings(self):
+        print 'Our names gif image running'
+        cocos.director.director.push( cocos.scene.Scene( NetworkSettings() ) )
 		
         
 class Credits(Menu):
@@ -225,7 +228,43 @@ class Settings(Menu):
         print 'multiple item callback', idx
     def change_AI(self, value):    
         difficulty = value                        
-        
+
+
+class NetworkSettings(Menu):
+    def __init__(self):
+    
+        super( NetworkSettings, self ).__init__("Settings")
+        self.menu_halign = LEFT
+        item2 = EntryMenuItem('IP:Port :\n', self.change_IP, 'localhost:54321',
+                              max_length=24)
+		
+
+        item3 = MenuItem('Start', self.start_game, 0)
+        #        item8 = ImageMenuItem('Credits', self.on_image_callback)
+        item4 = MenuItem('Back', self.on_callback)
+
+#        self.create_menu( [item1, item2, item4 ,item3])
+        self.create_menu( [item3,item2, item4 ])
+    def on_callback(self):
+        cocos.director.director.pop()
+    def change_IP(self, value):    
+        server_url = 'ws://' + value                        
+    def start_game(self, single):
+        if single == 2:
+            config.local_multiplayer = True
+        else:
+            config.local_multiplayer = False
+        config.single_player = single
+        config.server = False
+        bg = bg_layer.BgLayer()
+        game = game_layer.GameLayer(self.start_game)
+        audience = audience_layer.AudienceLayer()
+        self.restart_game = True
+        scene = Scene(bg, game, audience)
+        game.position = (config.screen_width-config.field_width)/2, 0
+        bg.position = game.position
+
+        director.push(scene)        
 
 		
 def main():
