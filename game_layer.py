@@ -72,7 +72,7 @@ class GameLayer(cocos.layer.Layer):
         self.entity_manager.reset()
         self._update_score_signs()
         self._get_ready()
-#        self.playing_sounds.append(sounds.goal.play())
+        self.playing_sounds.append(sounds.goal.play())
 
     def _get_ready(self):
         #pause the game and show "get ready"
@@ -113,7 +113,7 @@ class GameLayer(cocos.layer.Layer):
         self.entity_manager.reset()
         self._update_score_signs()
         self._get_ready()
-#        self.playing_sounds.append(sounds.goal.play())
+        self.playing_sounds.append(sounds.goal.play())
 
     def _update_score_signs(self):
         self.goalsign.element.text = str(self.goals1) + '-' + str(self.goals2)
