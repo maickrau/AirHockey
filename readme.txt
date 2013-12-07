@@ -25,6 +25,6 @@ Two player may play on the same machine, one player uses WASD and GVBN, the othe
 
 === Network multiplayer ===
 
-To join a multiplayer server, choose 'Network game' and change the IP and port to the server's IP and port. Then you can press the 'Start' button to join the server. The game will start when there are two players on the server.
+To join a multiplayer server, choose 'Network game' and change the IP and port to the server's IP and port. Then you can press the 'Start' button to join the server. The game will start when there are two players on the server. The player will switch sides after each goal.
 
 To host a multiplayer server, simply start the server executable. The server will start on port 54321.

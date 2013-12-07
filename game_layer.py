@@ -72,7 +72,6 @@ class GameLayer(cocos.layer.Layer):
         self.remove_entities()
         self.entity_manager.reset()
         self._update_score_signs()
-        self._get_ready()
         self.playing_sounds.append(sounds.goal.play())
 
     def _get_ready(self):
@@ -114,10 +113,11 @@ class GameLayer(cocos.layer.Layer):
             self.goals1 += 1
         elif goal == 2:
             self.goals2 += 1
+        self.stop_updater()
         self.remove_entities()
         self.entity_manager.reset()
+        self.pre_init({'num': '1'})
         self._update_score_signs()
-        self._get_ready()
         self.playing_sounds.append(sounds.goal.play())
 
     def _update_score_signs(self):
