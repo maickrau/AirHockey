@@ -94,7 +94,10 @@ class GameLayer(cocos.layer.Layer):
         self.remove(self.go_message)
 
     def _did_i_win(self):
-        if self.input_manager.num == '1':
+        num = int(self.input_manager.num)
+        if self.exch_goals:
+            num ^= 3
+        if num == 1:
             if self.goals1 >= self.max_goals:
                 return True
         else:
@@ -131,6 +134,7 @@ class GameLayer(cocos.layer.Layer):
             self.input_manager2 = input.InputManager('2', 2)
         else:
             self.input_manager = input.InputManager(msg['num'])
+            self.exch_goals = msg['exch_goals']
         self.physics_manager = physics.PhysicsManager(self.entity_manager.entities)
         self.physics_manager2 = physics.PhysicsManager(self.entity_manager2.entities)
 
@@ -143,7 +147,12 @@ class GameLayer(cocos.layer.Layer):
                 'letters1': (255, 128, 0),
                 'letters2': (0, 128, 255),
             }
-            color = colors.get(e.ident)
+            ident = e.ident
+            if self.exch_goals: # if we have exchanged goals, color balls accordingly
+                ident = ident.replace('1', '9')
+                ident = ident.replace('2', '1')
+                ident = ident.replace('9', '2')
+            color = colors.get(ident)
             if color:
                 e.color = color
                 e.default_color = color

@@ -70,7 +70,7 @@ class Session:
         #send the clients pre-init info and wait for "get ready" before actually starting
         print 'sending pre_init'
         for c in self.clients:
-            c.send_msg({'type': 'pre_init', 'num': str(c.num)})
+            c.send_msg({'type': 'pre_init', 'num': str(c.num), 'exch_goals': self.exch_goals})
         reactor.callLater(config.get_ready_time, self.unpause)
 
     def unpause(self):
@@ -86,7 +86,7 @@ class Session:
         msg_type = msg.get('type', '')
         if msg_type == 'input':
             self.input(client, msg)
-        elif msg_type == 'leaving':
+        elif msg_type == 'leaving': 
             self.broadcast_msg({'type': 'leave'})
             for c in self.clients:
                 c.sendClose()
@@ -129,6 +129,8 @@ class Session:
         self.seq = common_inp['seq']
         goal = self.entity_manager.is_goal()
         if goal:
+            if self.exch_goals:
+                goal ^= 3 # 1 becomes 2; 2 becomes 1
             c = self.clients
             c[goal - 1].score += 1
             score = {'type': 'score', 'score': {'1': c[0].score, '2': c[1].score}}
