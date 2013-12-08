@@ -21,8 +21,8 @@ class MenuLayer(cocos.layer.Layer):
 		right.position = config.screen_width-(config.screen_width-config.field_width)/2+sprite.get_max_width()/2, config.screen_height/2
 		self.add(right)
 
-        height = config.field_height / 2
-        width = config.field_width / 2
-        bg = cocos.sprite.Sprite("res/field.png", position=(width,height))
-        self.add(bg)
+		height = config.screen_height / 2
+		width = config.screen_width / 2
+		bg = cocos.sprite.Sprite("res/field.png", position=(width,height))
+		self.add(bg)
 		
