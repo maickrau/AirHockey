@@ -138,9 +138,9 @@ def AI_commands(state):
         #ball1
         
         
-        ball1x=(pos_bigballx + pos_ourgoal_x)/2-pos_ball1x + ((pos_bigballx+pos_ourgoal_x)/2-pos_ball1x)/abs((pos_bigballx+pos_ourgoal_x)/2-pos_ball1x)        
+        ball1x=(pos_bigballx + pos_ourgoal_x)/2-pos_ball1x + 2*((pos_bigballx+pos_ourgoal_x)/2-pos_ball1x)/abs((pos_bigballx+pos_ourgoal_x)/2-pos_ball1x)        
 
-        ball1y=(pos_bigbally + pos_ourgoal_y)/2-pos_ball1y + ((pos_bigbally +pos_ourgoal_y)/2-pos_ball1y)/abs((pos_bigbally +pos_ourgoal_y)/2-pos_ball1y)
+        ball1y=(pos_bigbally + pos_ourgoal_y)/2-pos_ball1y + 2*((pos_bigbally +pos_ourgoal_y)/2-pos_ball1y)/abs((pos_bigbally +pos_ourgoal_y)/2-pos_ball1y)
         ball2x=pos_bigballx-pos_ball2x + (pos_bigballx-pos_ball2x)/abs(pos_bigballx-pos_ball2x)
         ball2y=pos_bigbally-pos_ball2y + (pos_bigbally-pos_ball2y)/abs(pos_bigbally-pos_ball2y)
         if (pos_ball1y)<pos_ourgoal_y*0.8:
