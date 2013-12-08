@@ -142,7 +142,7 @@ class MainMenu(Menu):
         pyglet.app.exit()
     def change_IP(self, value):
     
-        server_url = 'ws://' + value                        
+        config.server_url = 'ws://' + value                        
         
     def on_multiple_callback(self, idx ):
         print 'multiple item callback', idx
@@ -253,11 +253,12 @@ class Settings(Menu):
     def on_callback(self):
         cocos.director.director.pop()
     def change_IP(self, value):    
-        server_url = 'ws://' + value                        
+        config.server_url = 'ws://' + value                        
     def on_multiple_callback(self, idx ):
         print 'multiple item callback', idx
     def change_AI(self, value):    
-        difficulty = value                        
+        if(len(value)>0):
+            config.difficulty = int(value)                        
 
 
 
@@ -282,8 +283,9 @@ class AISettings(Menu):
                             [(110, 500), (110, 450),(110, 300),(110, 250), (110, 150)]))
     def on_callback(self):
         cocos.director.director.pop()
-    def change_AI(self, value):    
-        difficulty =value                        
+    def change_AI(self, value):  
+        if(len(value)>0):    
+            config.difficulty = int(value)                        
     def start_game(self, single):
         if single == 2:
             config.local_multiplayer = True
@@ -326,7 +328,7 @@ class NetworkSettings(Menu):
     def on_callback(self):
         cocos.director.director.pop()
     def change_IP(self, value):    
-        server_url = 'ws://' + value                        
+        config.server_url = 'ws://' + value                        
     def start_game(self, single):
         if single == 2:
             config.local_multiplayer = True
