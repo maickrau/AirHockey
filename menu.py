@@ -327,11 +327,16 @@ class NetworkSettings(Menu):
     def __init__(self):
     
         super( NetworkSettings, self ).__init__("Settings")
-        self.font_title['color'] = (0, 0, 0, 255)
-        self.font_item['color'] = (0, 0, 0, 255)
-        self.font_item_selected['color'] = (0, 0, 0, 255)
+        self.font_item['font_size'] = 36
+        self.font_item_selected['font_size'] = 36
+        
+        self.font_title['color'] = (67, 39, 140, 255)
+        self.font_item['color'] = (50, 50, 250, 255)
+        self.font_item_selected['color'] = (250, 0, 255, 255)
         self.menu_halign = LEFT
-        item2 = EntryMenuItem('IP:Port :\n', self.change_IP, 'localhost:54321',
+        item2 = EntryMenuItem('IP :\n', self.change_IP, 'localhost',
+                              max_length=24)
+        item5 = EntryMenuItem('Port :\n', self.change_PORT, '54321',
                               max_length=24)
 		
 
@@ -340,12 +345,15 @@ class NetworkSettings(Menu):
         item4 = MenuItem('Back', self.on_callback)
 
 #        self.create_menu( [item1, item2, item4 ,item3])
-        self.create_menu( [item3,item2, item4 ], layout_strategy=fixedPositionMenuLayout(
-                            [(110, 500), (110, 450),(110, 300),(110, 250), (110, 150)]))
+        self.create_menu( [item3,item2, item5, item4 ], layout_strategy=fixedPositionMenuLayout(
+                            [(350, 540), (321, 270),(278, 220), (350, 90)]))
     def on_callback(self):
         cocos.director.director.pop()
     def change_IP(self, value):    
-        config.server_url = 'ws://' + value                        
+        server_IP = 'ws://' + value
+#        print server_IP
+    def change_PORT(self, value):    
+        server_PORT = ':' + value                       
     def start_game(self, single):
         if single == 2:
             config.local_multiplayer = True
