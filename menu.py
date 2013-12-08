@@ -48,7 +48,7 @@ class MainMenu(Menu):
         self.font_item['font_size'] = 36
         self.font_item_selected['font_size'] = 36
         
-        self.font_title['color'] = (181, 9, 255, 255)
+        self.font_title['color'] = (67, 39, 140, 255)
         self.font_item['color'] = (50, 50, 250, 255)
         self.font_item_selected['color'] = (250, 0, 255, 255)
 
@@ -84,7 +84,7 @@ class MainMenu(Menu):
 
         item3 = MenuItem('Network Game', self.network_game_settings)
         item5 = MenuItem('Local Multiplayer', self.start_game, 2)
-        item4 = MenuItem('Single Player', self.start_game, 1)
+        item4 = MenuItem('Single Player', self.AI_game_settings)
 #        item5 = MenuItem('High Score', self.on_callback)
         
 #        resolutions = ['ON', 'OFF']
@@ -174,6 +174,9 @@ class MainMenu(Menu):
     def network_game_settings(self):
         print 'Our names gif image running'
         cocos.director.director.push( cocos.scene.Scene( MenuWrapperLayer(NetworkSettings) ) )
+    def AI_game_settings(self):
+        print 'Our names gif image running'
+        cocos.director.director.push( cocos.scene.Scene( MenuWrapperLayer(AISettings) ) )
 		
         
 class Credits(Menu):
@@ -257,6 +260,50 @@ class Settings(Menu):
         difficulty = value                        
 
 
+
+class AISettings(Menu):
+    def __init__(self):
+    
+        super( AISettings, self ).__init__("Settings")
+        self.font_title['color'] = (0, 0, 0, 255)
+        self.font_item['color'] = (0, 0, 0, 255)
+        self.font_item_selected['color'] = (0, 0, 0, 255)
+        self.menu_halign = LEFT
+        item2 = EntryMenuItem('AI level:\n', self.change_AI, '1',
+                              max_length=24)
+		
+
+        item3 = MenuItem('Start', self.start_game, 1)
+        #        item8 = ImageMenuItem('Credits', self.on_image_callback)
+        item4 = MenuItem('Back', self.on_callback)
+
+#        self.create_menu( [item1, item2, item4 ,item3])
+        self.create_menu( [item3,item2, item4 ], layout_strategy=fixedPositionMenuLayout(
+                            [(110, 500), (110, 450),(110, 300),(110, 250), (110, 150)]))
+    def on_callback(self):
+        cocos.director.director.pop()
+    def change_AI(self, value):    
+        difficulty =value                        
+    def start_game(self, single):
+        if single == 2:
+            config.local_multiplayer = True
+        else:
+            config.local_multiplayer = False
+        config.single_player = single
+        config.server = False
+        bg = bg_layer.BgLayer()
+        game = game_layer.GameLayer(self.start_game)
+        audience = audience_layer.AudienceLayer()
+        self.restart_game = True
+        scene = Scene(bg, game, audience)
+        game.position = (config.screen_width-config.field_width)/2, 0
+        bg.position = game.position
+
+        director.push(scene)        
+
+        
+        
+        
 class NetworkSettings(Menu):
     def __init__(self):
     
