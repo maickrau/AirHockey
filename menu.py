@@ -205,6 +205,12 @@ class Tutorial(Menu):
 
     def __init__( self ):
         super( Tutorial, self ).__init__("Tutorial")
+        self.font_item['font_size'] = 36
+        self.font_item_selected['font_size'] = 36
+        
+        self.font_title['color'] = (100, 50, 250, 255)
+        self.font_item['color'] = (50, 50, 250, 255)
+        self.font_item_selected['color'] = (250, 0, 255, 255)
 
         item1 = ImageMenuItem('res/keyboard_singleplayer.png', self.on_image_callback)
         item1.scale=5
@@ -218,7 +224,7 @@ class Tutorial(Menu):
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8])
         self.create_menu( [item1, item2, item3], layout_strategy=fixedPositionMenuLayout(
-                            [(300, 500),(300, 300), (300, 150)]))
+                            [(400, 500),(400, 300), (400, 100)]))
     def on_image_callback(self):
         cocos.director.director.pop()
     def on_callback(self):
