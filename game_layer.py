@@ -265,9 +265,11 @@ class GameLayer(cocos.layer.Layer):
         if not config.local_multiplayer:
             if self._did_i_win():
                 end_label.element.text = "You won!"
+                self.background_player.pause()
                 self.playing_sounds.append(sounds.win.play())
             else:
                 end_label.element.text = "You lost!"
+                self.background_player.pause()
                 self.playing_sounds.append(sounds.lose.play())
         else:
             if self._did_i_win():
@@ -275,6 +277,7 @@ class GameLayer(cocos.layer.Layer):
             else:
                 end_label.element.text = "Player 2 won!"
             # everyone is a winner
+            self.background_player.pause()
             self.playing_sounds.append(sounds.win.play())
         self.add(end_label)
         continue_label = cocos.text.Label("Press Enter to continue", font_size=16, anchor_x='center', anchor_y='top', color=(0, 0, 0, 255))
