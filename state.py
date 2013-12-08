@@ -115,6 +115,7 @@ class EntityManager():
                 e.update(dt, self.entities)
 
     def _should_render(self, old, new):
+        return True
         new = map(round, world_to_view(new))
         return old[0] != new[0] or old[1] != new[1]
 
@@ -123,7 +124,6 @@ class EntityManager():
             if self._should_render(ball.old_int_pos, ball.pos):
                 ball.position = world_to_view(ball.pos)
                 ball.old_int_pos = to_int_pos(ball.pos)
-                ball.scale = ball.radius/config.radius
 
     def recolor_balls(self, input_state):
         for ball in self.entities:

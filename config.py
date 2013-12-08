@@ -24,10 +24,10 @@ bindings_local_multiplayer1 = {
     65362: 'up2', # arrow up
     65364: 'down2', # arrow down
 
-    65460: 'left', # numpad left
-    65462: 'right', # numpad right
-    65464: 'up', # numpad up
-    65458: 'down', # numpad down
+    65460: 'left', # numpad 4
+    65462: 'right', # numpad 6
+    65464: 'up', # numpad 8
+    65461: 'down', # numpad 5
 }
 
 #bindings for player 2 in local multiplayer
