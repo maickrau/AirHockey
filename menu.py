@@ -34,7 +34,7 @@ class MainMenu(Menu):
 #    arial=font.load('Arial',26,bold=True, italic=False)
 
     def __init__( self ):
-        super( MainMenu, self ).__init__("AirHockey  v1.0")
+        super( MainMenu, self ).__init__("AirHockey")
         self.restart_game = False
 
 #        self.menu_valign = BOTTOM
@@ -65,7 +65,7 @@ class MainMenu(Menu):
 #        item2= MultipleMenuItem('Resolution: ',
 #                        self.on_multiple_callback,
 #                        resolutions)
-        item2 = MenuItem('Settings', self.settings_callback)
+#        item2 = MenuItem('Settings', self.settings_callback)
 
         item3 = MenuItem('Network Game', self.network_game_settings)
         item5 = MenuItem('Local Multiplayer', self.start_game, 2)
@@ -90,9 +90,17 @@ class MainMenu(Menu):
         item10 = MenuItem('', self.on_quit)
 
         
+        item2 = ImageMenuItem('res/field_with_audience.png', self.on_image_callback)
+        item2.scale=10
+#        bg = cocos.scene.Scene("res/field.png", 100,100)
+#        director.run(bg)
+        #        item2 = MenuItem('', self.on_callback)        
+        self.create_menu( [item3,item5,item4,item2, item7, item8, item9], layout_strategy=fixedPositionMenuLayout(
+                            [(10, 500), (10, 450),(10, 400),(400, 350),(10, 300),(10, 250), (10, 150)]))        
+        
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8])
-        self.create_menu( [item3,item5,item4,item2, item7, item8, item10, item9])
+#        self.create_menu( [item3,item5,item4,item2, item7, item8, item10, item9])
 
 
 
@@ -179,16 +187,19 @@ class Tutorial(Menu):
     def __init__( self ):
         super( Tutorial, self ).__init__("Tutorial")
 
-        item1 = ImageMenuItem('Tutorial_image.jpg', self.on_image_callback)
+        item1 = ImageMenuItem('res/keyboard_singleplayer.png', self.on_image_callback)
         item1.scale=5
-        bg = cocos.sprite.Sprite("res/field.png", position=(config.screen_width,config.screen_height))
-        item2 = MenuItem('', self.on_callback)
+#        bg = cocos.sprite.Sprite("res/field.png", position=(config.screen_width,config.screen_height))
+#        item2 = MenuItem('', self.on_callback)
+        item2 = ImageMenuItem('res/keyboard_2_players.png', self.on_image_callback)
+        item1.scale=5
+        item2.scale=5
 
         item3 = MenuItem('Back', self.on_callback)        
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8])
-        self.create_menu( [item1, item3], layout_strategy=fixedPositionMenuLayout(
-                            [(300, 500), (300, 150)]))
+        self.create_menu( [item1, item2, item3], layout_strategy=fixedPositionMenuLayout(
+                            [(300, 500),(300, 300), (300, 150)]))
     def on_image_callback(self):
         cocos.director.director.pop()
     def on_callback(self):
