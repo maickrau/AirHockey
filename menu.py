@@ -185,18 +185,33 @@ class Credits(Menu):
 
     def __init__( self ):
         super( Credits, self ).__init__("Creators:")
+        self.font_item['font_size'] = 36
+        self.font_item_selected['font_size'] = 36
+        
+        self.font_title['color'] = (67, 39, 140, 255)
+#        self.font_item['color'] = (50, 50, 250, 255)
+        self.font_item_selected['color'] = (250, 0, 255, 255)
 		
         item3 = MenuItem('Mikko', self.on_callback)
         item4 = MenuItem('Niklas', self.on_callback)
         item5 = MenuItem('Slava', self.on_callback)
         item2 = MenuItem('Alexey', self.on_callback)
-        #        item8 = ImageMenuItem('Credits', self.on_image_callback)
-
+        item8 = ImageMenuItem('res/Creators_images_Alexey.jpg', self.on_image_callback)
+        item9 = ImageMenuItem('res/Creators_images_Mikko.jpg', self.on_image_callback)
+        item10 = ImageMenuItem('res/Creators_images_Niklas.jpg', self.on_image_callback)
+        item11 = ImageMenuItem('res/Creators_images_Slava.jpg', self.on_image_callback)
+        item8.scale=5
+        item9.scale=5
+        item10.scale=5
+        item11.scale=5
         
-#        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
+        self.create_menu( [item2,item3,item4,item5,item8, item9, item10, item11], layout_strategy=fixedPositionMenuLayout([(200, 600), (600, 600), (200, 300), (600, 300), (200,450), (600,450), (200,150),(600,150)]) )
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8])
-        self.create_menu( [item2, item3,item4,item5])
     def on_callback(self):
+        cocos.director.director.pop()
+    def on_image_callback(self):
+        cocos.director.director.pop()
+    def on_quit(self):
         cocos.director.director.pop()
 
 class Tutorial(Menu):
