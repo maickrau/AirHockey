@@ -28,3 +28,7 @@ Two player may play on the same machine, one player uses WASD and GVBN, the othe
 To join a multiplayer server, choose 'Network game' and change the IP and port to the server's IP and port. Then you can press the 'Start' button to join the server. The game will start when there are two players on the server. The player will switch sides after each goal.
 
 To host a multiplayer server, simply start the server executable. The server will start on port 54321.
+
+=== Issues ===
+
+If the game gives error "AVbin is required to decode compressed media" when starting, install the AVbin library's binaries (Version 5, Windows (32-bit x86) is known to work on windows 7 64-bit) from https://github.com/AVbin/AVbin/downloads You may need to copy avbin.dll to the game's folder
