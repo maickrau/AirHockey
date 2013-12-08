@@ -22,6 +22,7 @@ import config
 import game_layer
 import bg_layer
 import audience_layer
+#import menu_layer
 
 #from cocos.menu import Menu, MenuItem, RIGHT
 from cocos.director import director
@@ -38,6 +39,8 @@ class MainMenu(Menu):
         self.restart_game = False
 
 #        self.menu_valign = BOTTOM
+#        ML=menu_layer.MenuLayer()
+#        self.add(ML)
         self.menu_halign = LEFT
 
         # then add the items
