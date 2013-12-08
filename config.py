@@ -52,7 +52,7 @@ decel = 10.0
 radius = 16.0
 elasticity = 1.0 #1 is perfectly elastic collisions, 0 is perfectly inelastic
 mass = 1.0
-difficulty=1
+difficulty=0
 
 screen_height = 800
 screen_width = 800

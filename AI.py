@@ -50,7 +50,7 @@ def AI_commands(state):
         ball2y=pos_bigbally-pos_ball2y + (pos_bigbally-pos_ball2y)/abs(pos_bigbally-pos_ball2y)
         serial= { 'letters' + num: {'x': int(ball1x), 'y': int(ball1y)}, 'arrows' + num: {'x': ball2x, 'y': ball2y}, 'seq':'0', 'type':'input'}
     #    print serial
-    elif(config.difficulty==2):
+    elif(config.difficulty==1):
     #    ball1_1, ball1_2, ball2_1, ball2_2, puck, walls_left, walls_right, stopPower, wall_player1_goal, wall_player2_goal, goal_player1, goal_player2 = state
         ball2_1 = state.getByIdent('letters2')
         ball2_2 = state.getByIdent('arrows2')
@@ -100,7 +100,7 @@ def AI_commands(state):
 #        ball2x=pos_bigballx-pos_ball2x + (pos_bigballx-pos_ball2x)/abs(pos_bigballx-pos_ball2x)
 #        ball2y=pos_bigbally-pos_ball2y + (pos_bigbally-pos_ball2y)/abs(pos_bigbally-pos_ball2y)
         serial= { 'letters' + num: {'x': int(ball1x), 'y': int(ball1y)}, 'arrows' + num: {'x': ball2x, 'y': ball2y}, 'seq':'0', 'type':'input'}
-    elif(config.difficulty==1):
+    elif(config.difficulty==2):
     #    ball1_1, ball1_2, ball2_1, ball2_2, puck, walls_left, walls_right, stopPower, wall_player1_goal, wall_player2_goal, goal_player1, goal_player2 = state
         ball2_1 = state.getByIdent('letters2')
         ball2_2 = state.getByIdent('arrows2')

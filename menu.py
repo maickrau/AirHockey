@@ -163,7 +163,7 @@ class MainMenu(Menu):
         print 'color item callback:', value
         
     def play_our_names(self):
-        print 'Our names gif image running'
+        #print 'Our names gif image running'
         cocos.director.director.push( cocos.scene.Scene( Credits() ) )
     def tutorial_callback(self):
 
@@ -172,10 +172,10 @@ class MainMenu(Menu):
 
         cocos.director.director.push( cocos.scene.Scene( Settings() ) )
     def network_game_settings(self):
-        print 'Our names gif image running'
+        #print 'Our names gif image running'
         cocos.director.director.push( cocos.scene.Scene( MenuWrapperLayer(NetworkSettings) ) )
     def AI_game_settings(self):
-        print 'Our names gif image running'
+        #print 'Our names gif image running'
         cocos.director.director.push( cocos.scene.Scene( MenuWrapperLayer(AISettings) ) )
 		
         
@@ -266,12 +266,23 @@ class AISettings(Menu):
     def __init__(self):
     
         super( AISettings, self ).__init__("Settings")
-        self.font_title['color'] = (0, 0, 0, 255)
-        self.font_item['color'] = (0, 0, 0, 255)
-        self.font_item_selected['color'] = (0, 0, 0, 255)
+        
+        self.font_item['font_size'] = 36
+        self.font_item_selected['font_size'] = 36
+        
+        self.font_title['color'] = (67, 39, 140, 255)
+        self.font_item['color'] = (50, 50, 250, 255)
+        self.font_item_selected['color'] = (250, 0, 255, 255)
+        
         self.menu_halign = LEFT
-        item2 = EntryMenuItem('AI level:\n', self.change_AI, '1',
-                              max_length=24)
+        
+        AI_levels = ['0','1','2']
+        item2= MultipleMenuItem('AI level: ',
+                        self.on_multiple_callback,
+                        AI_levels)
+        
+#        item2 = EntryMenuItem('AI level:\n', self.change_AI, '1',
+ #                             max_length=24)
 		
 
         item3 = MenuItem('Start', self.start_game, 1)
@@ -280,12 +291,18 @@ class AISettings(Menu):
 
 #        self.create_menu( [item1, item2, item4 ,item3])
         self.create_menu( [item3,item2, item4 ], layout_strategy=fixedPositionMenuLayout(
-                            [(110, 500), (110, 450),(110, 300),(110, 250), (110, 150)]))
+                            [(350, 540), (310, 270), (350, 90)]))
     def on_callback(self):
         cocos.director.director.pop()
+    def on_multiple_callback(self, idx ):
+        print 'multiple item callback', idx
+        config.difficulty = int(idx)
+    
     def change_AI(self, value):  
         if(len(value)>0):    
             config.difficulty = int(value)                        
+    def on_quit( self ):
+        pyglet.app.exit()
     def start_game(self, single):
         if single == 2:
             config.local_multiplayer = True
