@@ -45,6 +45,9 @@ class MainMenu(Menu):
         super( MainMenu, self ).__init__("AirHockey")
         self.restart_game = False
 
+        self.font_item['font_size'] = 36
+        self.font_item_selected['font_size'] = 36
+        
         self.font_title['color'] = (181, 9, 255, 255)
         self.font_item['color'] = (50, 50, 250, 255)
         self.font_item_selected['color'] = (250, 0, 255, 255)
