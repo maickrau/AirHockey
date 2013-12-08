@@ -355,6 +355,21 @@ class NetworkSettings(Menu):
     def change_PORT(self, value):    
         server_PORT = ':' + value                       
     def start_game(self, single):
+        try:
+            server_IP
+            try:
+                server_PORT
+            except NameError:
+                print "No manual port"
+                config.server_url='ws://'+server_IP+':54321'
+        except NameError:
+            print "No manual server"
+        else:
+            try:
+                server_PORT
+                config.server_url='ws://localhost:'+server_PORT
+            except NameError:
+                print "No manual port"
         if single == 2:
             config.local_multiplayer = True
         else:
