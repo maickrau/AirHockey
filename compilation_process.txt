@@ -12,11 +12,13 @@
 6. uncomment compile/setup.py line 4 '__init__.py'
 7. in compile folder: python setup.py py2exe
 8. copy resources:
-  src/res/ -> compile/res/
+  compile/res/ -> compile/dist/res/
 9. rename compile/__init__.exe -> compile/AirHockey.exe
-10. copy ENTIRE compile/dist/ folder somewhere else
+10. copy compile/dist/ -> dist/
 11. comment compile/setup.py line 4 '__init__.py', uncomment line 5 'server.py'
 12. in compile folder: python setup.py py2exe
-13. copy compile/server.exe to the dist/ elsewhere
+13. copy compile/dist/server.exe to dist/server.exe
+
+Now dist/ has distribution version.
 
 "access denied" on py2exe running: try again
