@@ -26,15 +26,15 @@
             <y:Property name="y.view.tabular.TableNodePainter.ALTERNATE_COLUMN_SELECTION_STYLE">
               <y:SimpleStyle fillColor="#474A4380" lineColor="#000000" lineType="line" lineWidth="3.0"/>
             </y:Property>
+            <y:Property class="java.awt.Color" name="com.yworks.bpmn.icon.line.color" value="#000000"/>
             <y:Property name="y.view.tabular.TableNodePainter.ALTERNATE_ROW_STYLE">
               <y:SimpleStyle fillColor="#474A4340" lineColor="#000000" lineType="line" lineWidth="1.0"/>
             </y:Property>
-            <y:Property class="java.awt.Color" name="com.yworks.bpmn.icon.line.color" value="#000000"/>
+            <y:Property class="java.awt.Color" name="com.yworks.bpmn.icon.fill" value="#ffffffe6"/>
+            <y:Property class="java.awt.Color" name="POOL_LANE_COLOR_ALTERNATING" value="#ffffff"/>
             <y:Property name="y.view.tabular.TableNodePainter.ALTERNATE_ROW_SELECTION_STYLE">
               <y:SimpleStyle fillColor="#474A4380" lineColor="#000000" lineType="line" lineWidth="3.0"/>
             </y:Property>
-            <y:Property class="java.awt.Color" name="com.yworks.bpmn.icon.fill" value="#ffffffe6"/>
-            <y:Property class="java.awt.Color" name="POOL_LANE_COLOR_ALTERNATING" value="#ffffff"/>
             <y:Property class="java.lang.String" name="POOL_LANE_STYLE" value="LANE_STYLE_COLUMNS"/>
             <y:Property class="java.awt.Color" name="com.yworks.bpmn.icon.fill2" value="#d4d4d4cc"/>
             <y:Property class="java.awt.Color" name="POOL_LANE_COLOR_MAIN" value="#ffffff"/>
@@ -107,7 +107,7 @@
               <y:Geometry height="88.0" width="413.91666666666663" x="348.49999999999994" y="-102.0625"/>
               <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
               <y:BorderStyle color="#000000" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="custom" textColor="#000000" visible="true" width="34.017578125" x="189.94954427083326" y="34.6494140625">Layer<y:LabelModel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="custom" textColor="#000000" visible="true" width="34.017578125" x="189.94954427083331" y="34.6494140625">Layer<y:LabelModel>
                   <y:SmartNodeLabelModel distance="4.0"/>
                 </y:LabelModel>
                 <y:ModelParameter>
@@ -254,7 +254,7 @@ update_pos(ball, dt)<y:LabelModel>
           <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="81.373046875" x="20.8134765625" y="4.0">EntityManager</y:NodeLabel>
-          <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="180.4140625" modelName="custom" textColor="#000000" visible="true" width="110.734375" x="2.0" y="30.701171875">entities
+          <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="151.01171875" modelName="custom" textColor="#000000" visible="true" width="110.734375" x="2.0" y="30.701171875">entities
 points
 state_history
 
@@ -263,9 +263,7 @@ getByIdent()
 is_goal()
 render()
 reset()
-update()
-updateEntities()
-drawEntities()<y:LabelModel>
+update()<y:LabelModel>
               <y:ErdAttributesNodeLabelModel/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -540,7 +538,6 @@ update()<y:LabelModel>
       </data>
     </edge>
     <edge id="n0::e3" source="n0::n5" target="n0::n2">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="-145.45833333333326" ty="43.972396515625064"/>
@@ -551,7 +548,6 @@ update()<y:LabelModel>
       </data>
     </edge>
     <edge id="e6" source="n7" target="n0::n5">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -563,7 +559,6 @@ update()<y:LabelModel>
     </edge>
     <edge id="n0::e4" source="n0::n3" target="n0::n6">
       <data key="d8"/>
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="264.35416666666674" ty="-5.611831999999993"/>
@@ -575,7 +570,6 @@ update()<y:LabelModel>
     </edge>
     <edge id="n0::e5" source="n0::n2" target="n0::n6">
       <data key="d8"/>
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="1.1386868088199886" sy="-1.7368319999999358" tx="-224.43422985784673" ty="8.1756680000002"/>
@@ -587,7 +581,6 @@ update()<y:LabelModel>
     </edge>
     <edge id="n0::e6" source="n0::n1" target="n0::n6">
       <data key="d8"/>
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="-526.53125" ty="3.7631680000000642"/>
@@ -599,7 +592,6 @@ update()<y:LabelModel>
     </edge>
     <edge id="e7" source="n8" target="n0::n6">
       <data key="d8"/>
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="485.2593153645205" ty="-15.307500000000005"/>
@@ -611,7 +603,6 @@ update()<y:LabelModel>
     </edge>
     <edge id="e8" source="n9" target="n8">
       <data key="d8"/>
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="-48.61458333333371" ty="2.3174999999999955"/>
@@ -623,7 +614,6 @@ update()<y:LabelModel>
     </edge>
     <edge id="e9" source="n10" target="n4">
       <data key="d8"/>
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="50.781249999999886" ty="8.567499999999995"/>
@@ -635,7 +625,6 @@ update()<y:LabelModel>
     </edge>
     <edge id="e10" source="n11" target="n8">
       <data key="d8"/>
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="48.61458333333326" ty="25.59375"/>
@@ -647,7 +636,6 @@ update()<y:LabelModel>
     </edge>
     <edge id="e11" source="n3" target="n8">
       <data key="d8"/>
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="-7.53125" sy="-97.39939746464887" tx="4.352083333333212" ty="-25.99314746464887"/>
@@ -659,7 +647,6 @@ update()<y:LabelModel>
     </edge>
     <edge id="e12" source="n1" target="n0::n2">
       <data key="d8"/>
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="76.30208333333337" ty="-20.486831999999936"/>
