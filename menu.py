@@ -22,13 +22,20 @@ import config
 import game_layer
 import bg_layer
 import audience_layer
-#import menu_layer
+import menu_layer
 
 #from cocos.menu import Menu, MenuItem, RIGHT
 from cocos.director import director
 #from cocos.layer import AnimationLayer
 
 from threading import Thread
+
+class MenuWrapperLayer(Layer):
+    def __init__(self, menu_type):
+        super(MenuWrapperLayer, self).__init__()
+        ML=menu_layer.MenuLayer()
+        self.add(menu_type(), z=1)
+        self.add(ML, z=0)
 
 class MainMenu(Menu):
 
@@ -38,9 +45,11 @@ class MainMenu(Menu):
         super( MainMenu, self ).__init__("AirHockey")
         self.restart_game = False
 
+        self.font_title['color'] = (0, 0, 0, 255)
+        self.font_item['color'] = (0, 0, 0, 255)
+        self.font_item_selected['color'] = (0, 0, 0, 255)
+
 #        self.menu_valign = BOTTOM
-#        ML=menu_layer.MenuLayer()
-#        self.add(ML)
         self.menu_halign = LEFT
 
         # then add the items
@@ -93,13 +102,14 @@ class MainMenu(Menu):
         item10 = MenuItem('', self.on_quit)
 
         
-        item2 = ImageMenuItem('res/field_with_audience.png', self.on_image_callback)
-        item2.scale=10
+#        item2 = ImageMenuItem('res/field_with_audience.png', self.on_image_callback)
+#        item2.scale=10
 #        bg = cocos.scene.Scene("res/field.png", 100,100)
 #        director.run(bg)
         #        item2 = MenuItem('', self.on_callback)        
-        self.create_menu( [item3,item5,item4,item2, item7, item8, item9], layout_strategy=fixedPositionMenuLayout(
-                            [(10, 500), (10, 450),(10, 400),(400, 350),(10, 300),(10, 250), (10, 150)]))        
+        self.create_menu( [item3,item5,item4, item7, item8, item9], layout_strategy=fixedPositionMenuLayout(
+                            [(110, 500), (110, 450),(110, 400),(110, 300),(110, 250), (110, 150)]))        
+
         
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8])
@@ -160,7 +170,7 @@ class MainMenu(Menu):
         cocos.director.director.push( cocos.scene.Scene( Settings() ) )
     def network_game_settings(self):
         print 'Our names gif image running'
-        cocos.director.director.push( cocos.scene.Scene( NetworkSettings() ) )
+        cocos.director.director.push( cocos.scene.Scene( MenuWrapperLayer(NetworkSettings) ) )
 		
         
 class Credits(Menu):
@@ -248,6 +258,9 @@ class NetworkSettings(Menu):
     def __init__(self):
     
         super( NetworkSettings, self ).__init__("Settings")
+        self.font_title['color'] = (0, 0, 0, 255)
+        self.font_item['color'] = (0, 0, 0, 255)
+        self.font_item_selected['color'] = (0, 0, 0, 255)
         self.menu_halign = LEFT
         item2 = EntryMenuItem('IP:Port :\n', self.change_IP, 'localhost:54321',
                               max_length=24)
@@ -258,7 +271,8 @@ class NetworkSettings(Menu):
         item4 = MenuItem('Back', self.on_callback)
 
 #        self.create_menu( [item1, item2, item4 ,item3])
-        self.create_menu( [item3,item2, item4 ])
+        self.create_menu( [item3,item2, item4 ], layout_strategy=fixedPositionMenuLayout(
+                            [(110, 500), (110, 450),(110, 300),(110, 250), (110, 150)]))
     def on_callback(self):
         cocos.director.director.pop()
     def change_IP(self, value):    
