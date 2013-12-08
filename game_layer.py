@@ -49,8 +49,8 @@ class GameLayer(cocos.layer.Layer):
         self.playing_sounds = []
         self.background_player = pyglet.media.Player()
         self.background_player.eos_action = 'loop'
-#        self.background_player.queue(sounds.background)
-#        self.background_player.play()
+        self.background_player.queue(sounds.background)
+        self.background_player.play()
 
         if not config.single_player:
             if not is_restart:
