@@ -343,6 +343,8 @@ class NetworkSettings(Menu):
         item3 = MenuItem('Start', self.start_game, 0)
         #        item8 = ImageMenuItem('Credits', self.on_image_callback)
         item4 = MenuItem('Back', self.on_callback)
+        self.server_IP = 'localhost'
+        self.server_PORT = '54321'
 
 #        self.create_menu( [item1, item2, item4 ,item3])
         self.create_menu( [item3,item2, item5, item4 ], layout_strategy=fixedPositionMenuLayout(
@@ -350,26 +352,12 @@ class NetworkSettings(Menu):
     def on_callback(self):
         cocos.director.director.pop()
     def change_IP(self, value):    
-        server_IP = 'ws://' + value
+        self.server_IP = value
 #        print server_IP
     def change_PORT(self, value):    
-        server_PORT = ':' + value                       
+        self.server_PORT = value                       
     def start_game(self, single):
-        try:
-            server_IP
-            try:
-                server_PORT
-            except NameError:
-                print "No manual port"
-                config.server_url='ws://'+server_IP+':54321'
-        except NameError:
-            print "No manual server"
-        else:
-            try:
-                server_PORT
-                config.server_url='ws://localhost:'+server_PORT
-            except NameError:
-                print "No manual port"
+        config.server_url='ws://'+self.server_IP+':'+self.server_PORT
         if single == 2:
             config.local_multiplayer = True
         else:
