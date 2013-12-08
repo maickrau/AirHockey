@@ -45,9 +45,9 @@ class MainMenu(Menu):
         super( MainMenu, self ).__init__("AirHockey")
         self.restart_game = False
 
-        self.font_title['color'] = (0, 0, 0, 255)
-        self.font_item['color'] = (0, 0, 0, 255)
-        self.font_item_selected['color'] = (0, 0, 0, 255)
+        self.font_title['color'] = (181, 9, 255, 255)
+        self.font_item['color'] = (50, 50, 250, 255)
+        self.font_item_selected['color'] = (250, 0, 255, 255)
 
 #        self.menu_valign = BOTTOM
         self.menu_halign = LEFT
@@ -108,7 +108,7 @@ class MainMenu(Menu):
 #        director.run(bg)
         #        item2 = MenuItem('', self.on_callback)        
         self.create_menu( [item3,item5,item4, item7, item8, item9], layout_strategy=fixedPositionMenuLayout(
-                            [(110, 500), (110, 450),(110, 400),(110, 300),(110, 250), (110, 150)]))        
+                            [(265, 630), (250, 580),(280, 530),(335, 250),(340, 200), (365, 90)]), selected_effect=shake(),unselected_effect=shake_back())        
 
         
 #        self.create_menu( [item1,item2,item3,item4,item5,item6, item7, item8], layout_strategy=fixedPositionMenuLayout([(510, 500), (130, 300), (200, 300), (300, 350), (400,300), (500,300), (600,300),(700,300)]) )
